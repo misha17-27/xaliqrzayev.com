@@ -1,0 +1,5 @@
+# RAW photo sources (too large for repo)
+*.ARW
+*.arw
+.DS_Store
+Thumbs.db
