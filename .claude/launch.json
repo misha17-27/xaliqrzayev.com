@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "site", "runtimeExecutable": "python", "runtimeArgs": ["-m", "http.server", "8080", "--directory", "D:/xaliqrzayev.com"], "port": 8080 }
+    { "name": "php", "runtimeExecutable": "C:/Users/Asus/.config/herd/bin/php83/php.exe", "runtimeArgs": ["-S", "localhost:8020", "-t", "D:/xaliqrzayev.com", "D:/xaliqrzayev.com/router.php"], "port": 8020 }
   ]
 }

@@ -1,0 +1,9 @@
+---
+deployment:
+  tasks:
+    # Сайт копируется в public_html. Не перезаписываются: admin/config.php, storage/, загрузки.
+    - export DEPLOYPATH=$HOME/public_html/
+    - /bin/rsync -a --exclude='.git' --exclude='.gitignore' --exclude='.cpanel.yml' --exclude='.claude' --exclude='_designs' --exclude='router.php' --exclude='README.md' --exclude='admin/config.php' --exclude='storage/*' --exclude='assets/img/uploads/*' ./ $DEPLOYPATH
+    - /bin/mkdir -p ${DEPLOYPATH}storage ${DEPLOYPATH}assets/img/uploads
+    - /bin/cp -n storage/.htaccess ${DEPLOYPATH}storage/.htaccess
+    - /bin/cp assets/img/uploads/.htaccess ${DEPLOYPATH}assets/img/uploads/.htaccess

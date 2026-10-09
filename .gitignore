@@ -1,5 +1,15 @@
 # RAW photo sources (too large for repo)
 *.ARW
 *.arw
+
+# Secrets and runtime data
+admin/config.php
+storage/*
+!storage/.htaccess
+!storage/.gitkeep
+assets/img/uploads/*
+!assets/img/uploads/.htaccess
+!assets/img/uploads/.gitkeep
+
 .DS_Store
 Thumbs.db

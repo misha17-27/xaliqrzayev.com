@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /muraciet.php
+
+Sitemap: https://xaliqrzayev.com/sitemap.xml
