@@ -8,39 +8,63 @@
 ## Локальный запуск
 
 ```bash
-C:/Users/Asus/.config/herd/bin/php83/php.exe -S localhost:8020 -t D:/xaliqrzayev.com D:/xaliqrzayev.com/router.php
+C:/Users/Asus/.config/herd/bin/php83/php.exe -S localhost:8020 -t D:/xaliqrzayev.com/public D:/xaliqrzayev.com/tools/router.php
 ```
 
 Сайт: <http://localhost:8020>, панель: <http://localhost:8020/admin/>.
-Логин и пароль локальной панели — в `admin/config.php` (`install_admin_email` / `install_admin_pass`).
+Логин и пароль локальной панели — в `config/config.php` (`install_admin_email` / `install_admin_pass`).
 
 ## Структура
 
+Корень сайта — только `public/`. Код, шаблоны, конфиг и база лежат вне веб-корня.
+
 ```
-index.php              Главная страница (шаблон V3)
-muraciet.php           Обработка формы записи (JSON для JS, redirect без JS)
-404.php, sitemap.php   404 и /sitemap.xml
-router.php             Роутер для php -S (на сервер не нужен)
-.htaccess              Apache/LiteSpeed: запреты, кеш, gzip, /sitemap.xml
-includes/
-  config.php           Константы (SITE_URL, BASE_URL…) + загрузка контента
-  defaults.php         ⚙ Начальный контент: тексты, услуги, образование, контакты, SEO
-  content.php          Подменяет defaults значениями из БД (если панель установлена)
-  functions.php        e(), url(), asset(), picture(), Turnstile, токен формы
-  mailer.php           SMTP-отправка без PHPMailer
-  compat.php           Функции PHP 8 для PHP 7.4
-admin/
-  index.php            Все разделы панели
-  lib.php              Сессии, вход, CSRF, загрузка файлов, layout и CSS
-  schema.php           Таблицы + перенос defaults.php в БД
-  install.php          Установка (один раз, затем удалить на сервере)
-  config.sample.php    Шаблон → скопировать в config.php (в git не попадает)
-assets/                css/style.css, js/main.js, img/ (uploads/ — загрузки из панели)
-storage/               SQLite-база, секрет формы, запасной лог заявок (закрыто .htaccess)
-_designs/              Исходные HTML-макеты V1–V3 (закрыты .htaccess)
+public/                     ← document root (на cPanel — public_html)
+  _init.php                 находит корень проекта и подключает app/bootstrap.php
+  index.php                 главная: собирает страницу из templates/
+  muraciet.php              обработка формы записи (JSON для JS, redirect без JS)
+  404.php, sitemap.php      404 и /sitemap.xml
+  robots.txt, .htaccess     правила Apache/LiteSpeed: кеш, gzip, заголовки безопасности
+  admin/
+    index.php               вход в панель → app/admin/controller.php
+    install.php             установка БД (защищена install_token)
+  assets/
+    css/style.css           стили сайта
+    css/admin.css           стили панели
+    js/main.js, js/admin.js
+    img/                    фото врача, favicon; uploads/ — загрузки из панели
+
+app/                        ← логика (вне веб-корня)
+  bootstrap.php             константы путей и сайта, подключение всего ниже
+  defaults.php              ⚙ начальный контент: тексты, услуги, образование, контакты, SEO
+  content.php               подменяет defaults значениями из БД (если панель установлена)
+  functions.php             e(), url(), asset(), picture(), icon(), render_page(), Turnstile
+  mailer.php                SMTP без PHPMailer
+  db.php, schema.php        PDO (SQLite/MySQL), таблицы и перенос defaults в БД
+  compat.php                функции PHP 8 для PHP 7.4
+  admin/
+    controller.php          вход, авторизация, маршрутизация разделов
+    lib.php                 сессии, CSRF, лимит входов, загрузка файлов, layout
+    fields.php              описания полей и разделов
+    helpers.php             табличный редактор строк
+    actions.php             обработка POST + экспорт CSV
+    sections/*.php          по файлу на раздел (overview, texts, services, …)
+
+templates/                  ← HTML-шаблоны
+  layout/head.php           <head>: SEO, OG, JSON-LD, аналитика
+  layout/header.php         шапка и меню
+  layout/footer.php         футер, кнопка WhatsApp, скрипты
+  sections/*.php            hero, about, diagnostics, surgery, education, contact, not-found
+
+config/
+  config.sample.php         шаблон → скопировать в config.php (в git не попадает)
+storage/                    SQLite-база, секрет формы, запасной лог заявок
+design/mockups/             исходные HTML-макеты V1–V3
+tools/router.php            роутер для php -S (на сервер не нужен)
 ```
 
-Если БД нет или она недоступна, сайт продолжает работать на `includes/defaults.php`.
+Порядок блоков главной задаётся в `public/index.php` (`render_page(..., ['hero', 'about', …])`).
+Если БД нет или она недоступна, сайт работает на `app/defaults.php`.
 
 ## Админ-панель
 
@@ -69,18 +93,28 @@ _designs/              Исходные HTML-макеты V1–V3 (закрыт�
 
 Репозиторий: <https://github.com/misha17-27/xaliqrzayev.com>
 
+`.cpanel.yml` раскладывает проект так:
+
+```
+/home/USER/xaliqrzayev.com/   app/, config/, templates/, storage/   (вне веб-доступа)
+/home/USER/public_html/       содержимое public/
+```
+
+`public/_init.php` сам находит проект рядом с `public_html`.
+
 1. **cPanel → MySQL Databases**: создать базу и пользователя, дать ALL PRIVILEGES.
 2. **cPanel → Git Version Control → Create**: Clone URL репозитория, путь — например `/home/USER/repositories/xaliqrzayev.com`.
-3. Файл `.cpanel.yml` в репозитории копирует сайт в `public_html` (нажать **Deploy HEAD Commit** во вкладке *Pull or Deploy*).
-   Если `public_html` у аккаунта другой — поправить `DEPLOYPATH` в `.cpanel.yml`.
-4. На сервере (File Manager) создать `public_html/admin/config.php` из `config.sample.php`:
-   `driver => 'mysql'`, данные БД, свой `install_admin_pass` и `install_token`.
+3. Вкладка *Pull or Deploy* → **Deploy HEAD Commit**.
+4. В File Manager создать `/home/USER/xaliqrzayev.com/config/config.php` из `config.sample.php`:
+   `driver => 'mysql'`, данные БД, свой `install_admin_pass` и длинный `install_token`.
 5. Открыть `https://xaliqrzayev.com/admin/install.php?token=…` (повторный запуск безопасен — заполненные таблицы не трогает).
-   Деплой восстанавливает `install.php`, поэтому защищает его длинный случайный `install_token`.
-6. Включить SSL (AutoSSL) и раскомментировать HTTPS-редирект в `.htaccess`.
+6. Включить SSL (AutoSSL) и раскомментировать HTTPS-редирект в `public/.htaccess`.
 7. **MultiPHP Manager** → PHP 8.1+.
 
-`admin/config.php`, `storage/*` и `assets/img/uploads/*` не хранятся в git и деплоем не перезаписываются.
+`config/config.php`, `storage/*` и `public/assets/img/uploads/*` не хранятся в git и деплоем не перезаписываются.
+
+Запасной вариант без Git: загрузить весь проект в `public_html` — корневой `.htaccess`
+перенаправит все запросы в `public/`, а `app/`, `config/`, `storage/` закрыты своими `.htaccess`.
 
 Дальнейшие обновления: `git push` → cPanel *Update from Remote* → *Deploy HEAD Commit*.
 

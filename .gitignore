@@ -3,13 +3,13 @@
 *.arw
 
 # Secrets and runtime data
-admin/config.php
+config/config.php
 storage/*
 !storage/.htaccess
 !storage/.gitkeep
-assets/img/uploads/*
-!assets/img/uploads/.htaccess
-!assets/img/uploads/.gitkeep
+public/assets/img/uploads/*
+!public/assets/img/uploads/.htaccess
+!public/assets/img/uploads/.gitkeep
 
 .DS_Store
 Thumbs.db

@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="az">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dr. Xaliq Rzayev — Uroloq-Androloq</title>
+<meta name="description" content="Dr. Xaliq Rzayev — böyüklər və uşaqlar üçün uroloji müayinə, diaqnostika və cərrahi müalicə. Endoskopik, rekonstruktiv, andrologik və uşaq uroloji əməliyyatlar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blue:#0b4f8a; --blue-d:#073a66; --blue-l:#e8f1fa; --accent:#16a3b8;
+  --ink:#0f1f2e; --muted:#5b6b7b; --line:#e3e9ef; --bg:#f6f9fc; --white:#fff;
+  --radius:14px; --shadow:0 10px 30px rgba(11,79,138,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{overflow-x:clip;font-family:Inter,system-ui,sans-serif;color:var(--ink);background:var(--white);line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.container{width:min(1180px,100% - 32px);margin-inline:auto}
+.btn{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;padding:14px 24px;border-radius:999px;font-weight:600;font-size:15px;transition:.2s}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:hover{background:var(--blue-d)}
+.btn-outline{border:1.5px solid var(--blue);color:var(--blue)}
+.btn-outline:hover{background:var(--blue-l)}
+.btn-wa{background:#25d366;color:#fff}
+.btn-wa:hover{background:#1ebe5a}
+.btn svg{width:18px;height:18px}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:72px}
+.logo{display:flex;align-items:center;gap:12px;font-weight:700}
+.logo-mark{width:40px;height:40px;border-radius:10px;background:var(--blue);color:#fff;display:grid;place-items:center;font-weight:800;font-size:15px}
+.logo small{display:block;font-weight:500;font-size:12px;color:var(--muted)}
+.menu{display:flex;gap:28px;font-size:15px;font-weight:500;color:var(--muted)}
+.menu a:hover{color:var(--blue)}
+.nav-cta{display:flex;align-items:center;gap:16px}
+.nav-phone{font-weight:600;color:var(--blue)}
+.burger{display:none;background:none;border:0;width:40px;height:40px;cursor:pointer}
+.burger span{display:block;width:22px;height:2px;background:var(--ink);margin:5px auto;transition:.2s}
+
+/* hero */
+.hero{background:linear-gradient(180deg,var(--bg),#fff);padding:64px 0 80px;overflow:hidden}
+.hero-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center}
+.tag{display:inline-flex;align-items:center;gap:8px;background:var(--blue-l);color:var(--blue);font-weight:600;font-size:13px;padding:7px 14px;border-radius:999px;margin-bottom:22px}
+.tag::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent)}
+.hero h1{font-size:clamp(34px,5vw,56px);line-height:1.08;letter-spacing:-.02em;font-weight:800;margin-bottom:12px}
+.hero h1 span{color:var(--blue)}
+.hero .lead{font-size:clamp(18px,2vw,21px);font-weight:600;color:var(--ink);margin-bottom:14px}
+.hero p.desc{color:var(--muted);font-size:17px;max-width:560px;margin-bottom:32px}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-photo{position:relative}
+.hero-photo .frame{border-radius:24px;overflow:hidden;box-shadow:0 30px 60px rgba(11,79,138,.18);aspect-ratio:4/5;background:#dfe6ea}
+.hero-photo img{width:100%;height:100%;object-fit:cover}
+.hero-photo::before{content:"";position:absolute;inset:-24px -24px auto auto;width:180px;height:180px;border-radius:50%;background:var(--blue-l);z-index:-1}
+.badge-float{position:absolute;left:-28px;bottom:36px;background:#fff;border-radius:16px;padding:16px 20px;box-shadow:var(--shadow);display:flex;gap:12px;align-items:center}
+.badge-float .ic{width:42px;height:42px;border-radius:12px;background:var(--blue-l);display:grid;place-items:center;color:var(--blue)}
+.badge-float b{display:block;font-size:15px}
+.badge-float small{color:var(--muted);font-size:13px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:44px;max-width:560px}
+.stat{border-left:3px solid var(--blue);padding-left:14px}
+.stat b{font-size:22px;display:block}
+.stat small{color:var(--muted);font-size:13px}
+
+/* sections */
+section{padding:88px 0}
+.sec-head{max-width:720px;margin-bottom:44px}
+.eyebrow{color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+.sec-head h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;letter-spacing:-.02em}
+.sec-head p{color:var(--muted);margin-top:12px;font-size:17px}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px;align-items:start}
+.about-card{background:var(--bg);border-radius:var(--radius);padding:32px}
+.about-card h3{font-size:22px;margin-bottom:4px}
+.about-card .role{color:var(--blue);font-weight:600;margin-bottom:20px}
+.about-card ul{list-style:none;display:grid;gap:12px}
+.about-card li{display:flex;gap:10px;font-size:15px;color:var(--muted)}
+.about-card li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;border-radius:50%;background:var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M5 12l5 5L20 7'/%3E%3C/svg%3E") center/11px no-repeat}
+.about-text p{color:#33475b;margin-bottom:16px;font-size:17px}
+.award{display:flex;gap:16px;align-items:flex-start;background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;border-radius:var(--radius);padding:22px 24px;margin-top:24px}
+.award svg{flex:none;width:34px;height:34px;opacity:.9}
+
+/* tabs + lists */
+.bg-soft{background:var(--bg)}
+.tabs{display:inline-flex;background:#fff;border:1px solid var(--line);border-radius:999px;padding:5px;margin-bottom:32px}
+.tab{border:0;background:none;padding:11px 22px;border-radius:999px;font:inherit;font-weight:600;color:var(--muted);cursor:pointer;font-size:15px}
+.tab.active{background:var(--blue);color:#fff}
+.panel{display:none}
+.panel.active{display:block}
+.grid-list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.item{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;display:flex;gap:12px;align-items:flex-start;font-size:15px;transition:.2s}
+.item:hover{border-color:var(--blue);box-shadow:var(--shadow);transform:translateY(-2px)}
+.item .dot{flex:none;width:30px;height:30px;border-radius:8px;background:var(--blue-l);color:var(--blue);display:grid;place-items:center;font-size:12px;font-weight:700}
+
+/* surgery */
+.surg-grid{display:grid;grid-template-columns:1fr 1.6fr;gap:28px}
+.surg-card{border-radius:var(--radius);padding:32px;border:1px solid var(--line)}
+.surg-card.dark{background:var(--blue);color:#fff;border:0}
+.surg-card h3{font-size:22px;margin-bottom:6px}
+.surg-card .sub{font-size:14px;opacity:.75;margin-bottom:22px}
+.surg-card ul{list-style:none;columns:1;gap:24px}
+.surg-card.wide ul{columns:2}
+.surg-card li{padding:10px 0;border-bottom:1px solid rgba(127,127,127,.18);font-size:15px;break-inside:avoid;display:flex;gap:10px}
+.surg-card li::before{content:"→";color:var(--accent);font-weight:700}
+.surg-card.dark li::before{color:#8fd3ff}
+
+/* education */
+.timeline{position:relative;max-width:820px}
+.timeline::before{content:"";position:absolute;left:11px;top:6px;bottom:6px;width:2px;background:var(--line)}
+.tl{position:relative;padding-left:48px;margin-bottom:28px}
+.tl::before{content:"";position:absolute;left:3px;top:4px;width:18px;height:18px;border-radius:50%;background:#fff;border:4px solid var(--blue)}
+.tl .yr{font-weight:700;color:var(--blue);font-size:15px}
+.tl .box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:20px 22px;margin-top:8px}
+.tl h4{font-size:18px;margin-bottom:4px}
+.tl p{color:var(--muted);font-size:15px}
+
+/* contact */
+.contact{background:linear-gradient(135deg,var(--blue),var(--blue-d));color:#fff;border-radius:24px;padding:56px;display:grid;grid-template-columns:1.2fr .8fr;gap:40px;align-items:center}
+.contact h2{font-size:clamp(28px,3.6vw,40px);line-height:1.15;margin-bottom:12px}
+.contact p{opacity:.85;font-size:17px}
+.contact .phone-big{font-size:clamp(26px,3vw,34px);font-weight:800;display:block;margin-bottom:18px}
+.contact .btn-light{background:#fff;color:var(--blue)}
+.contact-actions{display:flex;flex-direction:column;gap:12px;align-items:flex-start}
+
+footer{padding:32px 0;color:var(--muted);font-size:14px;border-top:1px solid var(--line);margin-top:88px}
+footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px}
+
+/* mobile call bar */
+.callbar{display:none}
+
+@media (max-width:980px){
+  .menu{display:none;position:absolute;top:72px;left:0;right:0;background:#fff;flex-direction:column;gap:0;border-bottom:1px solid var(--line);padding:8px 16px 16px}
+  .menu.open{display:flex}
+  .menu a{padding:12px 0;border-bottom:1px solid var(--line)}
+  .burger{display:block}
+  .nav-phone{display:none}
+  .hero-grid,.about-grid,.surg-grid,.contact{grid-template-columns:1fr}
+  .hero-photo{max-width:440px;margin-inline:auto}
+  .grid-list{grid-template-columns:repeat(2,1fr)}
+  .surg-card.wide ul{columns:1}
+}
+@media (max-width:620px){
+  section{padding:64px 0}
+  .hero{padding:40px 0 56px}
+  .grid-list{grid-template-columns:1fr}
+  .badge-float{left:12px;bottom:12px}
+  .contact{padding:32px 22px;border-radius:18px}
+  .tabs{display:flex}
+  .tab{flex:1;padding:11px 10px}
+  .nav-cta .btn{display:none}
+  .callbar{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:fixed;left:0;right:0;bottom:0;padding:10px 12px;background:#fff;border-top:1px solid var(--line);z-index:60}
+  .callbar .btn{justify-content:center;padding:12px}
+  body{padding-bottom:72px}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a href="#" class="logo"><span class="logo-mark">XR</span><span>Dr. Xaliq Rzayev<small>Uroloq-Androloq</small></span></a>
+    <nav class="menu" id="menu">
+      <a href="#haqqimda">Haqqımda</a>
+      <a href="#diaqnostika">Müayinə</a>
+      <a href="#cerrahi">Cərrahi müalicə</a>
+      <a href="#tehsil">Təhsil</a>
+      <a href="#elaqe">Əlaqə</a>
+    </nav>
+    <div class="nav-cta">
+      <a class="nav-phone" href="tel:+994556225453">+994 55 622 54 53</a>
+      <a class="btn btn-primary" href="#elaqe">Qəbula yazıl</a>
+      <button class="burger" aria-label="Menyu" onclick="document.getElementById('menu').classList.toggle('open')"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="container hero-grid">
+    <div>
+      <span class="tag">Uroloq-Androloq · Uşaq urologiyası</span>
+      <h1>Dr. <span>Xaliq Rzayev</span></h1>
+      <p class="lead">Böyüklər və uşaqlar üçün uroloji müayinə, diaqnostika və cərrahi müalicə</p>
+      <p class="desc">Uroloji və androloji xəstəliklərin müayinəsi, diaqnostikası və müalicəsi. Endoskopik, rekonstruktiv, andrologik və uşaq uroloji cərrahi müdaxilələr.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="tel:+994556225453"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Zəng et</a>
+        <a class="btn btn-wa" href="https://wa.me/994556225453" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5 2.5 1 3 .8 3.6.7.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.2-.3-.3-.6-.4zM12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2z"/></svg>WhatsApp</a>
+      </div>
+      <div class="stats">
+        <div class="stat"><b>2017-dən</b><small>uroloq-androloq</small></div>
+        <div class="stat"><b>Böyük + uşaq</b><small>bütün yaş qrupları</small></div>
+        <div class="stat"><b>Endoskopik</b><small>minimal invaziv cərrahiyyə</small></div>
+      </div>
+    </div>
+    <div class="hero-photo">
+      <div class="frame"><picture><source srcset="../../../public/assets/img/doctor-portrait.webp" type="image/webp"><img src="../../../public/assets/img/doctor-portrait.jpg" alt="Dr. Xaliq Rzayev — uroloq-androloq" width="960" height="1200"></picture></div>
+      <div class="badge-float"><span class="ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span><span><b>Endoskopik cərrahiyyə</b><small>Minimal invaziv müdaxilələr</small></span></div>
+    </div>
+  </div>
+</section>
+
+<section id="haqqimda">
+  <div class="container about-grid">
+    <div class="about-card">
+      <h3>Dr. Xaliq Rzayev</h3>
+      <div class="role">Uroloq-Androloq</div>
+      <ul>
+        <li>Böyrək və sidik yollarının daş xəstəlikləri</li>
+        <li>Kişi reproduktiv sağlamlığı</li>
+        <li>Prostat və xaya xəstəlikləri</li>
+        <li>Uşaqlarda anadangəlmə uroloji patologiyalar</li>
+        <li>Endoskopik və rekonstruktiv cərrahi müdaxilələr</li>
+      </ul>
+    </div>
+    <div>
+      <div class="sec-head" style="margin-bottom:24px"><div class="eyebrow">Haqqımda</div><h2>Böyüklərdə və uşaqlarda uroloji xəstəliklərin müalicəsi</h2></div>
+      <div class="about-text">
+        <p>Dr. Xaliq Rzayev böyüklərdə və uşaqlarda uroloji xəstəliklərin müayinəsi, diaqnostikası və müalicəsi üzrə fəaliyyət göstərən uroloq-androloqdur.</p>
+        <p>Rusiyanın Stavropol Dövlət Tibb Universitetində ali tibb təhsili almış, daha sonra urologiya-andrologiya ixtisası üzrə klinik ordinatura keçmişdir.</p>
+        <p>Peşəkar fəaliyyətində böyrək və sidik yollarının daş xəstəlikləri, kişi reproduktiv sağlamlığı, prostat və xaya xəstəlikləri, uşaqlarda anadangəlmə uroloji patologiyalar, endoskopik və rekonstruktiv cərrahi müdaxilələr əsas istiqamətlərdəndir.</p>
+        <p>Yerli və beynəlxalq tibbi konfransların, simpoziumların və ixtisasartırma proqramlarının iştirakçısıdır. Urologiya sahəsində elmi məqalələrin müəllifi və müxtəlif elmi tədbirlərdə məruzəçidir.</p>
+      </div>
+      <div class="award">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M8.2 13.2 7 22l5-3 5 3-1.2-8.8"/></svg>
+        <div>Vətən Müharibəsində yaralanan hərbi qulluqçulara könüllü tibbi yardım göstərilməsində iştirakına görə <b>fəxri fərmanla</b> təltif olunmuşdur.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="diaqnostika" class="bg-soft">
+  <div class="container">
+    <div class="sec-head"><div class="eyebrow">Müayinə və diaqnostika</div><h2>Uroloji müayinə — böyüklər və uşaqlar üçün</h2><p>Şikayətlərin dəqiq araşdırılması, müasir diaqnostika və fərdi müalicə planı.</p></div>
+    <div class="tabs" role="tablist">
+      <button class="tab active" data-tab="d-adult">Böyüklər</button>
+      <button class="tab" data-tab="d-child">Uşaqlar</button>
+    </div>
+    <div class="panel active" id="d-adult"><div class="grid-list">
+      <div class="item"><span class="dot">01</span>Kişi və qadınlarda uroloji müayinə</div>
+      <div class="item"><span class="dot">02</span>Böyrək, sidik axarları və sidik kisəsi xəstəliklərinin diaqnostikası</div>
+      <div class="item"><span class="dot">03</span>Sidik ifrazında ağrı, yanma və çətinliyin araşdırılması</div>
+      <div class="item"><span class="dot">04</span>Tez-tez sidiyə getmə və sidik qaçırma</div>
+      <div class="item"><span class="dot">05</span>Sidikdə qan (hematuriya)</div>
+      <div class="item"><span class="dot">06</span>Təkrarlanan sidik yolu infeksiyaları</div>
+      <div class="item"><span class="dot">07</span>Böyrək və sidik yolları daşları</div>
+      <div class="item"><span class="dot">08</span>Prostat vəzi xəstəlikləri və prostat böyüməsi</div>
+      <div class="item"><span class="dot">09</span>Xaya ağrısı, şişkinlik və xaya xəstəlikləri</div>
+      <div class="item"><span class="dot">10</span>Varikosel və hidrosel</div>
+      <div class="item"><span class="dot">11</span>Uretra darlığı</div>
+      <div class="item"><span class="dot">12</span>Sidik kisəsi və sidik yollarında törəmələr</div>
+      <div class="item"><span class="dot">13</span>Kişi sonsuzluğu və spermoqrammanın qiymətləndirilməsi</div>
+      <div class="item"><span class="dot">14</span>Erektil disfunksiya və erkən boşalma</div>
+      <div class="item"><span class="dot">15</span>Kişilərdə hormonal və cinsi sağlamlıq problemləri</div>
+      <div class="item"><span class="dot">16</span>HPV və digər cinsi yolla keçən infeksiyalar</div>
+      <div class="item"><span class="dot">17</span>Əməliyyatöncəsi və əməliyyatsonrası uroloji nəzarət</div>
+    </div></div>
+    <div class="panel" id="d-child"><div class="grid-list">
+      <div class="item"><span class="dot">01</span>Uşaqlarda ümumi uroloji müayinə</div>
+      <div class="item"><span class="dot">02</span>Enməmiş xaya (kriptorxizm)</div>
+      <div class="item"><span class="dot">03</span>Xayanın yerində görünməməsi</div>
+      <div class="item"><span class="dot">04</span>Xaya ağrısı və xaya burulması şübhəsi</div>
+      <div class="item"><span class="dot">05</span>Hidrosel və qasıq yırtığı</div>
+      <div class="item"><span class="dot">06</span>Hipospadiya və anadangəlmə genital anomaliyalar</div>
+      <div class="item"><span class="dot">07</span>Xarici cinsiyyət orqanlarının inkişaf problemləri</div>
+      <div class="item"><span class="dot">08</span>Penis və xayaların inkişafının qiymətləndirilməsi</div>
+      <div class="item"><span class="dot">09</span>Fimoz və parafimoz</div>
+      <div class="item"><span class="dot">10</span>Sünnətöncəsi müayinə və sünnət sonrası problemlər</div>
+      <div class="item"><span class="dot">11</span>Sidik ifrazında ağrı və narahatlıq</div>
+      <div class="item"><span class="dot">12</span>Tez-tez sidiyə getmə və sidik qaçırma</div>
+      <div class="item"><span class="dot">13</span>Gecə sidik qaçırma (enurez)</div>
+      <div class="item"><span class="dot">14</span>Təkrarlanan sidik yolu infeksiyaları</div>
+      <div class="item"><span class="dot">15</span>Böyrək və sidik yollarının anadangəlmə xəstəlikləri</div>
+      <div class="item"><span class="dot">16</span>Vezikoureteral reflüks və sidik axını pozğunluqları</div>
+      <div class="item"><span class="dot">17</span>Uşaqlarda böyrək və sidik yolları daşları</div>
+      <div class="item"><span class="dot">18</span>Genital nahiyə travmaları</div>
+    </div></div>
+  </div>
+</section>
+
+<section id="cerrahi">
+  <div class="container">
+    <div class="sec-head"><div class="eyebrow">Cərrahi müalicə</div><h2>Endoskopik, rekonstruktiv və uşaq uroloji əməliyyatları</h2></div>
+    <div class="surg-grid">
+      <div class="surg-card dark">
+        <h3>Böyüklərdə</h3>
+        <div class="sub">Uroloji əməliyyatlar</div>
+        <ul>
+          <li>Ureteroskopiya (URS)</li>
+          <li>Böyrək və sidik yolları daşlarının endoskopik müalicəsi</li>
+          <li>Perkutan nefrolitotomiya (PCNL)</li>
+          <li>Prostatın transuretral rezeksiyası (TURP)</li>
+          <li>Sidik kisəsi törəmələrinin transuretral rezeksiyası (TURBT)</li>
+          <li>Sistoskopiya</li>
+          <li>Varikoselektomiya</li>
+          <li>Uretroplastika</li>
+          <li>Rekonstruktiv uroloji əməliyyatlar</li>
+        </ul>
+      </div>
+      <div class="surg-card wide">
+        <h3>Uşaqlarda</h3>
+        <div class="sub">Uşaq uroloji əməliyyatları</div>
+        <ul>
+          <li>Uşaq sünnəti (sirkumsiziya)</li>
+          <li>Fimoz və parafimozun cərrahi müalicəsi</li>
+          <li>Gizli/batmış penis əməliyyatı</li>
+          <li>Penoskrotal webbing-in cərrahi korreksiyası</li>
+          <li>V–Y skrotoplastika</li>
+          <li>Meatotomiya və meatoplastika</li>
+          <li>Hipospadiyanın cərrahi korreksiyası</li>
+          <li>Uretroplastika</li>
+          <li>Enməmiş xaya əməliyyatı (orxiopeksiya)</li>
+          <li>İkitərəfli kriptorxizmin cərrahi müalicəsi</li>
+          <li>Qasıq kanalının eksplorasiyası</li>
+          <li>Xaya burulması zamanı detorsiya və orxiopeksiya</li>
+          <li>Hidroselektomiya</li>
+          <li>Qasıq yırtığının cərrahi müalicəsi</li>
+          <li>Epididimal və paratestikulyar kistaların çıxarılması</li>
+          <li>Uşaq varikoselektomiyası</li>
+          <li>Ureteroskopiya və daşların endoskopik müalicəsi</li>
+          <li>Sistoskopiya</li>
+          <li>Sidik axarı daşlarının müalicəsi</li>
+          <li>Sidik kisəsi daşlarının endoskopik çıxarılması</li>
+          <li>Vezikoureteral reflüksün cərrahi və endoskopik müalicəsi</li>
+          <li>Ureteroneosistostomiya</li>
+          <li>Hidroureteronefroz zamanı rekonstruktiv əməliyyatlar</li>
+          <li>UPJ obstruksiyası zamanı pieloplastika</li>
+          <li>Sidik yollarının anadangəlmə patologiyalarının cərrahi korreksiyası</li>
+          <li>Penis travmalarında plastik-bərpa əməliyyatları</li>
+          <li>Sünnət sonrası fəsadların cərrahi korreksiyası</li>
+          <li>Xaya və xayaətrafı törəmələrin cərrahi müalicəsi</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tehsil" class="bg-soft">
+  <div class="container">
+    <div class="sec-head"><div class="eyebrow">Təhsil</div><h2>Akademik hazırlıq</h2></div>
+    <div class="timeline">
+      <div class="tl"><div class="yr">2008 – 2015</div><div class="box"><h4>Stavropol Dövlət Tibb Universiteti</h4><p>Rusiya Federasiyası · Fakültə: Müalicə işi</p></div></div>
+      <div class="tl"><div class="yr">2015 – 2017</div><div class="box"><h4>Stavropol Dövlət Tibb Universiteti</h4><p>Rusiya Federasiyası · İxtisas: Urologiya-Andrologiya · Klinik ordinatura</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="elaqe" style="padding-bottom:0">
+  <div class="container">
+    <div class="contact">
+      <div>
+        <h2>Qəbula yazılmaq üçün əlaqə saxlayın</h2>
+        <p>Zəng edin və ya WhatsApp-a yazın — sizin üçün uyğun vaxtı təyin edək.</p>
+      </div>
+      <div class="contact-actions">
+        <a class="phone-big" href="tel:+994556225453">+994 55 622 54 53</a>
+        <a class="btn btn-light" href="tel:+994556225453">Zəng et</a>
+        <a class="btn btn-wa" href="https://wa.me/994556225453" target="_blank" rel="noopener">WhatsApp-a yaz</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container"><span>© 2026 Dr. Xaliq Rzayev · Uroloq-Androloq</span><a href="tel:+994556225453">+994 55 622 54 53</a></div>
+</footer>
+
+<div class="callbar">
+  <a class="btn btn-primary" href="tel:+994556225453">Zəng et</a>
+  <a class="btn btn-wa" href="https://wa.me/994556225453" target="_blank" rel="noopener">WhatsApp</a>
+</div>
+
+<script>
+document.querySelectorAll('.tab').forEach(function(t){
+  t.addEventListener('click',function(){
+    var group=t.parentElement;
+    group.querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
+    t.classList.add('active');
+    var sec=group.parentElement;
+    sec.querySelectorAll('.panel').forEach(function(p){p.classList.toggle('active',p.id===t.dataset.tab)});
+  });
+});
+document.querySelectorAll('#menu a').forEach(function(a){a.addEventListener('click',function(){document.getElementById('menu').classList.remove('open')})});
+</script>
+</body>
+</html>

@@ -1,9 +1,13 @@
 ---
 deployment:
   tasks:
-    # Сайт копируется в public_html. Не перезаписываются: admin/config.php, storage/, загрузки.
-    - export DEPLOYPATH=$HOME/public_html/
-    - /bin/rsync -a --exclude='.git' --exclude='.gitignore' --exclude='.cpanel.yml' --exclude='.claude' --exclude='_designs' --exclude='router.php' --exclude='README.md' --exclude='admin/config.php' --exclude='storage/*' --exclude='assets/img/uploads/*' ./ $DEPLOYPATH
-    - /bin/mkdir -p ${DEPLOYPATH}storage ${DEPLOYPATH}assets/img/uploads
-    - /bin/cp -n storage/.htaccess ${DEPLOYPATH}storage/.htaccess
-    - /bin/cp assets/img/uploads/.htaccess ${DEPLOYPATH}assets/img/uploads/.htaccess
+    # Layihə:   $HOME/xaliqrzayev.com/  (app, config, templates, storage — veb-dən kənarda)
+    # Sayt:     $HOME/public_html/      (yalnız public/ qovluğunun məzmunu)
+    # Toxunulmur: config/config.php, storage/*, public/assets/img/uploads/*
+    - export APPPATH=$HOME/xaliqrzayev.com/
+    - export WEBPATH=$HOME/public_html/
+    - /bin/mkdir -p $APPPATH $WEBPATH
+    - /bin/rsync -a --delete --exclude='config/config.php' --exclude='storage/' app config templates $APPPATH
+    - /bin/mkdir -p ${APPPATH}storage
+    - /bin/cp -n storage/.htaccess ${APPPATH}storage/.htaccess
+    - /bin/rsync -a --exclude='assets/img/uploads/*' public/ $WEBPATH

@@ -1,6 +1,6 @@
 {
   "version": "0.0.1",
   "configurations": [
-    { "name": "php", "runtimeExecutable": "C:/Users/Asus/.config/herd/bin/php83/php.exe", "runtimeArgs": ["-S", "localhost:8020", "-t", "D:/xaliqrzayev.com", "D:/xaliqrzayev.com/router.php"], "port": 8020 }
+    { "name": "php", "runtimeExecutable": "C:/Users/Asus/.config/herd/bin/php83/php.exe", "runtimeArgs": ["-S", "localhost:8020", "-t", "D:/xaliqrzayev.com/public", "D:/xaliqrzayev.com/tools/router.php"], "port": 8020 }
   ]
 }
