@@ -205,8 +205,8 @@ $EDUCATION = [
 /* ---------------- SEO ---------------- */
 $SEO = [
     'home' => [
-        'title' => 'Dr. Xaliq Rzayev — Uroloq-Androloq | Böyüklər və uşaqlar üçün urologiya',
-        'descr' => 'Dr. Xaliq Rzayev — böyüklər və uşaqlar üçün uroloji müayinə, diaqnostika və cərrahi müalicə. Endoskopik, rekonstruktiv, andrologik və uşaq uroloji əməliyyatlar. ☎ +994 50 622 54 53',
+        'title' => 'Dr. Xaliq Rzayev — uroloq-androloq, uşaq urologiyası',
+        'descr' => 'Uroloq-androloq Dr. Xaliq Rzayev: böyüklər və uşaqlar üçün müayinə, diaqnostika, endoskopik və açıq uroloji əməliyyatlar. ☎ +994 50 622 54 53',
         'robots' => 'index,follow',
     ],
 ];

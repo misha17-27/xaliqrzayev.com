@@ -309,15 +309,19 @@ const SECTIONS = [
     'seo'         => ['SEO и аналитика', '☌'],
     'smtp'        => ['Почта (SMTP)', '✉'],
     'security'    => ['Безопасность', '⚿'],
+    'backup'      => ['Резервная копия', '⤓'],
     'users'       => ['Пользователи', '☺'],
     'profile'     => ['Мой профиль', '☺'],
 ];
 const GROUPS = [
     'ОСНОВНОЕ'  => ['overview', 'submissions'],
     'КОНТЕНТ'   => ['texts', 'services', 'highlights', 'education', 'images', 'contacts'],
-    'НАСТРОЙКИ' => ['seo', 'smtp', 'security', 'users', 'profile'],
+    'НАСТРОЙКИ' => ['seo', 'smtp', 'security', 'backup', 'users', 'profile'],
 ];
-const ADMIN_ONLY = ['users', 'smtp', 'security'];
+const ADMIN_ONLY = ['users', 'smtp', 'security', 'backup'];
+
+/* «Открыть на сайте» — bölməyə uyğun lövbər */
+const SITE_ANCHORS = ['services' => '#diaqnostika', 'education' => '#tehsil', 'contacts' => '#elaqe', 'submissions' => '#elaqe'];
 
 function require_admin(): void {
     require_login();
@@ -373,7 +377,7 @@ function layout_top(string $active, string $title): void {
     echo '<main><header class="bar">';
     echo '<label for="navtoggle" class="burger" title="Меню"><span></span><span></span><span></span></label>';
     echo '<h1>' . e($title) . '</h1><div class="bar-r">';
-    echo '<a class="btn ghost" href="../" target="_blank">Открыть сайт</a> ';
+    echo '<a class="btn ghost site" href="../' . (SITE_ANCHORS[$active] ?? '') . '" target="_blank" rel="noopener">Открыть сайт ↗</a> ';
     echo '<a class="btn" href="index.php?section=logout">Выйти</a></div></header><div class="body">';
     echo flash_render();
 }

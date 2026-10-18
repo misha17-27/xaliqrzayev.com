@@ -6,8 +6,8 @@ $st = $db->prepare('SELECT * FROM seo_pages WHERE slug=?'); $st->execute(['home'
 $p = $st->fetch() ?: ['title' => '', 'descr' => '', 'robots' => 'index,follow'];
 echo '<form method="post" class="panel">' . csrf_field() . '<input type="hidden" name="action" value="save">';
 echo '<h3>Главная страница</h3>';
-echo '<label>Title <span class="muted">(рекомендуется до 60 символов, сейчас: ' . mb_strlen($p['title']) . ')</span></label><input type="text" name="title" value="' . e($p['title']) . '">';
-echo '<label>Description <span class="muted">(рекомендуется 120–160 символов, сейчас: ' . mb_strlen((string)$p['descr']) . ')</span></label><textarea name="descr">' . e($p['descr']) . '</textarea>';
+echo '<label>Title</label><input type="text" name="title" value="' . e($p['title']) . '" data-max="60" data-min="30">';
+echo '<label>Description</label><textarea name="descr" data-max="160" data-min="120">' . e($p['descr']) . '</textarea>';
 echo '<label>Индексация</label><select name="robots">';
 foreach (['index,follow' => 'Разрешена (index, follow)', 'noindex,nofollow' => 'Запрещена (noindex) — для теста'] as $k => $l)
     echo '<option value="' . $k . '"' . ($p['robots'] === $k ? ' selected' : '') . '>' . e($l) . '</option>';

@@ -41,11 +41,6 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $max += 10; $st->execute([$grp, mb_substr($line, 0, 255), $max]); $n++;
             }
             flash("Добавлено пунктов: $n.");
-        } elseif ($act === 'renumber') {
-            $st = $db->prepare('SELECT id FROM services WHERE grp=? ORDER BY sort, id'); $st->execute([$grp]);
-            $up = $db->prepare('UPDATE services SET sort=? WHERE id=?');
-            foreach ($st->fetchAll() as $i => $r) $up->execute([($i + 1) * 10, $r['id']]);
-            flash('Порядок пересчитан (10, 20, 30…).');
         }
         redirect('index.php?section=services&grp=' . $grp);
     }
@@ -122,6 +117,26 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
             else { kv_set('settings', 'ga_id', $ga); flash($ga === '' ? 'Аналитика отключена.' : 'Номер аналитики сохранён.'); }
         }
         redirect('index.php?section=seo');
+    }
+
+    if ($section === 'backup' && $act === 'import') {
+        $err = '';
+        $raw = '';
+        if (!empty($_FILES['file']['tmp_name']) && is_uploaded_file($_FILES['file']['tmp_name']) && $_FILES['file']['size'] < 5 * 1024 * 1024) {
+            $raw = (string)file_get_contents($_FILES['file']['tmp_name']);
+        }
+        $data = $raw !== '' ? json_decode($raw, true) : null;
+        if (!is_array($data) || ($data['_format'] ?? '') !== BACKUP_FORMAT) {
+            flash('Файл не похож на резервную копию этого сайта.', 'err');
+        } else {
+            try {
+                $n = backup_restore($db, $data);
+                flash("Восстановлено из копии от " . ($data['_created'] ?? '?') . ". Записей: $n.");
+            } catch (Throwable $e) {
+                flash('Ошибка восстановления, данные не изменены: ' . $e->getMessage(), 'err');
+            }
+        }
+        redirect('index.php?section=backup');
     }
 
     if ($section === 'security' && $act === 'save') {
@@ -217,6 +232,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 
     redirect('index.php?section=' . $section);
+}
+
+/* ---------------- Ehtiyat nüsxə: JSON yükləmə (GET) ---------------- */
+if ($section === 'backup' && ($_GET['export'] ?? '') === 'json') {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Content-Disposition: attachment; filename="xaliqrzayev-backup-' . date('Y-m-d-His') . '.json"');
+    echo json_encode(backup_export($db), JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT);
+    exit;
 }
 
 /* ---------------- CSV eksport (GET) ---------------- */
