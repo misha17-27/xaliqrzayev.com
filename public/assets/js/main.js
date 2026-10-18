@@ -1,6 +1,14 @@
 (function () {
   'use strict';
 
+  /* Başlıq: ana səhifədə şəffaf, sürüşdürəndə tündləşir */
+  var hdr = document.getElementById('hdr');
+  if (hdr && !hdr.hasAttribute('data-solid')) {
+    var onScroll = function () { hdr.classList.toggle('scrolled', window.scrollY > 40); };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+
   /* Mobil menyu */
   var menu = document.getElementById('menu');
   var burger = document.querySelector('.burger');
@@ -8,6 +16,7 @@
     burger.addEventListener('click', function () {
       var open = menu.classList.toggle('open');
       burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if (hdr && open) hdr.classList.add('scrolled');
     });
     menu.querySelectorAll('a').forEach(function (a) {
       a.addEventListener('click', function () { menu.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); });
@@ -15,15 +24,26 @@
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape') menu.classList.remove('open'); });
   }
 
-  /* «Hamısını göstər» */
-  document.querySelectorAll('.toggle').forEach(function (b) {
-    var label = b.textContent;
+  /* Böyüklər / Uşaqlar tabları */
+  document.querySelectorAll('.switch button').forEach(function (b) {
     b.addEventListener('click', function () {
-      var open = b.closest('.aud-card').classList.toggle('open');
-      b.textContent = open ? 'Gizlət ↑' : label;
-      b.setAttribute('aria-expanded', open ? 'true' : 'false');
+      var sw = b.parentElement;
+      sw.querySelectorAll('button').forEach(function (x) { x.classList.remove('active'); });
+      b.classList.add('active');
+      sw.parentElement.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('active', p.id === b.dataset.pane); });
     });
   });
+
+  /* Bloklar görünəndə yumşaq peyda olur */
+  var reveal = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
+    }, { threshold: 0.12 });
+    reveal.forEach(function (el) { io.observe(el); });
+  } else {
+    reveal.forEach(function (el) { el.classList.add('in'); });
+  }
 
   /* Qəbul formu — səhifəni yeniləmədən */
   var form = document.getElementById('appt');

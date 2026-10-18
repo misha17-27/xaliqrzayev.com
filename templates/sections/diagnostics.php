@@ -1,19 +1,15 @@
-<?php
-/* Müayinə və diaqnostika: böyüklər / uşaqlar */
-$visible = 8;   // ilk 8 bənd görünür, qalanı «Hamısını göstər» ilə açılır
-?>
-<section id="muayine">
+<?php /* 02 · Müayinə və diaqnostika — böyüklər / uşaqlar tabları */ ?>
+<section id="diaqnostika" class="dark">
   <div class="container">
-    <div class="title"><span class="tg"><?= e($T['diag_tag']) ?></span><h2><?= e($T['diag_title']) ?></h2><p><?= e($T['diag_sub']) ?></p></div>
-    <div class="aud">
-      <?php foreach ([['diag_adult', 'adult', '🧑'], ['diag_child', 'child', '🧒']] as [$grp, $cls, $av]):
-        $items = $SERVICES[$grp] ?? []; if (!$items) continue; ?>
-      <div class="aud-card <?= $cls ?>">
-        <div class="aud-head"><span class="av"><?= $av ?></span><div><h3><?= e($T[$grp . '_title']) ?></h3><small><?= e($T[$grp . '_sub']) ?></small></div></div>
-        <ul class="checks"><?= check_list($items, $visible) ?></ul>
-        <?php if (count($items) > $visible): ?><button class="toggle" type="button" aria-expanded="false">Hamısını göstər (<?= count($items) ?>) ↓</button><?php endif; ?>
-      </div>
-      <?php endforeach; ?>
+    <div class="head reveal"><div class="num">02</div><div><div class="label"><?= e($T['diag_tag']) ?></div><h2><?= e($T['diag_title']) ?></h2></div></div>
+    <div class="switch" role="tablist">
+      <button type="button" class="active" data-pane="p-adult" role="tab"><?= e($T['diag_adult_title']) ?></button>
+      <button type="button" data-pane="p-child" role="tab"><?= e($T['diag_child_title']) ?></button>
     </div>
+    <?php foreach (['diag_adult' => 'p-adult', 'diag_child' => 'p-child'] as $grp => $id): ?>
+    <div class="pane<?= $id === 'p-adult' ? ' active' : '' ?>" id="<?= $id ?>"><ul class="list">
+      <?php foreach ($SERVICES[$grp] ?? [] as $t): ?><li><?= e($t) ?></li><?php endforeach; ?>
+    </ul></div>
+    <?php endforeach; ?>
   </div>
 </section>

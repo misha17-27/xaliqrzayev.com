@@ -7,41 +7,43 @@
 /* ---------------- Mətnlər ---------------- */
 $TEXTS = [
     'site_name'        => 'Dr. Xaliq Rzayev',
-    'site_role'        => 'Uroloq-Androloq',
+    'site_role'        => 'Uroloq · Androloq',
 
     'hero_badge'       => 'Uroloq-Androloq',
-    'hero_title_1'     => 'Dr.',
-    'hero_title_2'     => 'Xaliq Rzayev',
+    'hero_title_1'     => 'Dr. Xaliq',
+    'hero_title_2'     => 'Rzayev',
     'hero_lead'        => 'Böyüklər və uşaqlar üçün uroloji müayinə, diaqnostika və cərrahi müalicə',
     'hero_desc'        => 'Uroloji və androloji xəstəliklərin müayinəsi, diaqnostikası və müalicəsi. Endoskopik, rekonstruktiv, andrologik və uşaq uroloji cərrahi müdaxilələr.',
-    'hero_chip_1'      => 'Uşaq urologiyası',
-    'hero_chip_2'      => 'Endoskopik cərrahiyyə',
+    'hero_cap_label'   => 'İxtisas',
+    'hero_cap_text'    => 'Urologiya & Andrologiya',
 
     'about_tag'        => 'Haqqımda',
-    'about_title'      => 'Dr. Xaliq Rzayev — Uroloq-Androloq',
-    'about_body'       => "Dr. Xaliq Rzayev böyüklərdə və uşaqlarda uroloji xəstəliklərin müayinəsi, diaqnostikası və müalicəsi üzrə fəaliyyət göstərən uroloq-androloqdur.\n\nRusiyanın Stavropol Dövlət Tibb Universitetində ali tibb təhsili almış, daha sonra urologiya-andrologiya ixtisası üzrə klinik ordinatura keçmişdir.\n\nPeşəkar fəaliyyətində böyrək və sidik yollarının daş xəstəlikləri, kişi reproduktiv sağlamlığı, prostat və xaya xəstəlikləri, uşaqlarda anadangəlmə uroloji patologiyalar, endoskopik və rekonstruktiv cərrahi müdaxilələr əsas istiqamətlərdəndir.\n\nYerli və beynəlxalq tibbi konfransların, simpoziumların və ixtisasartırma proqramlarının iştirakçısıdır. Urologiya sahəsində elmi məqalələrin müəllifi və müxtəlif elmi tədbirlərdə məruzəçidir.",
-    'about_tags'       => "Daş xəstəlikləri\nKişi reproduktiv sağlamlığı\nProstat və xaya\nUşaq urologiyası\nEndoskopik cərrahiyyə\nRekonstruktiv cərrahiyyə",
+    'about_title'      => 'Peşəkar yanaşma, hər yaşda',
+    'about_quote'      => 'Böyüklərdə və uşaqlarda uroloji xəstəliklərin müayinəsi, androloji diaqnostikası və müalicəsi üzrə fəaliyyət göstərən uroloq-androloq.',
+    'about_body'       => "Rusiyanın Stavropol Dövlət Tibb Universitetində ali tibb təhsili almış, daha sonra urologiya-andrologiya ixtisası üzrə klinik ordinatura keçmişdir.\n\nPeşəkar fəaliyyətində böyrək və sidik yollarının daş xəstəlikləri, kişi reproduktiv sağlamlığı, prostat və xaya xəstəlikləri, uşaqlarda anadangəlmə uroloji patologiyalar, endoskopik və rekonstruktiv cərrahi müdaxilələr əsas istiqamətlərdəndir.\n\nYerli və beynəlxalq tibbi konfransların, simpoziumların və ixtisasartırma proqramlarının iştirakçısıdır. Urologiya sahəsində elmi məqalələrin müəllifi və müxtəlif elmi tədbirlərdə məruzəçidir.",
+    'about_tags'       => "Böyrək və sidik yollarının daş xəstəlikləri\nKişi reproduktiv sağlamlığı\nProstat və xaya xəstəlikləri\nUşaqlarda anadangəlmə uroloji patologiyalar",
     'award_text'       => 'Vətən Müharibəsində yaralanan hərbi qulluqçulara könüllü tibbi yardım göstərilməsində iştirakına görə fəxri fərmanla təltif olunmuşdur.',
 
     'diag_tag'         => 'Müayinə və diaqnostika',
-    'diag_title'       => 'Hansı şikayətlərlə müraciət etmək olar?',
-    'diag_sub'         => 'Böyüklər və uşaqlar üçün ayrıca yanaşma.',
-    'diag_adult_title' => 'Böyüklərdə',
-    'diag_adult_sub'   => 'Kişi və qadınlar',
-    'diag_child_title' => 'Uşaqlarda',
-    'diag_child_sub'   => 'Yenidoğulmuşdan yeniyetməyə qədər',
+    'diag_title'       => 'Uroloji müayinə',
+    'diag_adult_title' => 'Böyüklər',
+    'diag_child_title' => 'Uşaqlar',
 
     'surg_tag'         => 'Cərrahi müalicə',
     'surg_title'       => 'Əməliyyatlar',
-    'surg_sub'         => 'Endoskopik, rekonstruktiv, andrologik və uşaq uroloji cərrahi müdaxilələr.',
-    'surg_adult_title' => 'Böyüklərdə uroloji əməliyyatlar',
-    'surg_child_title' => 'Uşaq uroloji əməliyyatları',
+    'surg_aside_title' => 'Endoskopik, rekonstruktiv və uşaq uroloji cərrahiyyəsi',
+    'surg_sub'         => 'Minimal invaziv texnikalar və anadangəlmə patologiyaların korreksiyası — böyüklər və uşaqlar üçün.',
+    'surg_adult_title' => 'Böyüklərdə',
+    'surg_open_title'  => 'Açıq əməliyyatlar',
+    'surg_endo_title'  => 'Endoskopik əməliyyatlar',
+    'surg_child_title' => 'Uşaqlarda',
 
     'edu_tag'          => 'Təhsil',
-    'edu_title'        => 'Təhsil',
+    'edu_title'        => 'Akademik yol',
 
+    'cta_tag'          => 'Əlaqə',
     'cta_title'        => 'Qəbula yazılın',
-    'cta_text'         => 'Zəng edin, WhatsApp-a yazın və ya formu doldurun — uyğun vaxtı birlikdə seçək.',
+    'cta_text'         => 'Zəng edin, WhatsApp vasitəsilə yazın və ya formu doldurun — sizin üçün uyğun vaxtı birlikdə təyin edək.',
     'form_title'       => 'Onlayn müraciət',
     'form_ok'          => 'Müraciətiniz qəbul olundu. Tezliklə sizinlə əlaqə saxlanılacaq.',
 
@@ -50,9 +52,9 @@ $TEXTS = [
 
 /* ---------------- Əlaqə ---------------- */
 $CONTACT = [
-    'phone'     => '+994 55 622 54 53',
-    'phone_raw' => '+994556225453',
-    'whatsapp'  => '994556225453',
+    'phone'     => '+994 50 622 54 53',
+    'phone_raw' => '+994506225453',
+    'whatsapp'  => '994506225453',
     'email'     => '',
     'address'   => '',
     'hours'     => '',
@@ -66,24 +68,24 @@ $CONTACT = [
 /* ---------------- Şəkillər (assets/img daxilində) ---------------- */
 $IMAGES = [
     'photo_hero'  => 'doctor-portrait.jpg',
-    'photo_about' => 'doctor.jpg',
     'og_image'    => 'doctor-portrait.jpg',
 ];
 
-/* ---------------- Qısa kartlar (hero altında) ---------------- */
+/* ---------------- Zolaq (birinci ekranın altında) ---------------- */
 $HIGHLIGHTS = [
-    ['icon' => '🔬', 'title' => 'Diaqnostika',   'descr' => 'Şikayətlərin dəqiq araşdırılması'],
-    ['icon' => '💎', 'title' => 'Daş xəstəliyi', 'descr' => 'URS, PCNL, endoskopik müalicə'],
-    ['icon' => '🧸', 'title' => 'Uşaqlar',       'descr' => 'Anadangəlmə patologiyalar'],
-    ['icon' => '♂',  'title' => 'Andrologiya',   'descr' => 'Kişi reproduktiv sağlamlığı'],
+    ['icon' => '', 'title' => 'Endoskopik',       'descr' => 'URS, PCNL, TURP, TURBT'],
+    ['icon' => '', 'title' => 'Rekonstruktiv',    'descr' => 'Uretroplastika, pieloplastika'],
+    ['icon' => '', 'title' => 'Andrologiya',      'descr' => 'Kişi reproduktiv sağlamlığı'],
+    ['icon' => '', 'title' => 'Uşaq urologiyası', 'descr' => 'Anadangəlmə patologiyalar'],
 ];
 
 /* ---------------- Xidmət siyahıları ---------------- */
-/* Qruplar: diag_adult, diag_child, surg_adult, surg_child */
+/* Qruplar: diag_adult, diag_child, surg_open + surg_endo (böyüklər), surg_child */
 $SERVICE_GROUPS = [
     'diag_adult' => 'Müayinə — böyüklər',
     'diag_child' => 'Müayinə — uşaqlar',
-    'surg_adult' => 'Əməliyyatlar — böyüklər',
+    'surg_open'  => 'Əməliyyatlar — böyüklər, açıq',
+    'surg_endo'  => 'Əməliyyatlar — böyüklər, endoskopik',
     'surg_child' => 'Əməliyyatlar — uşaqlar',
 ];
 
@@ -127,16 +129,40 @@ $SERVICES = [
         'Uşaqlarda böyrək və sidik yolları daşları',
         'Genital nahiyə travmaları',
     ],
-    'surg_adult' => [
-        'Ureteroskopiya (URS)',
-        'Böyrək və sidik yolları daşlarının endoskopik müalicəsi',
-        'Perkutan nefrolitotomiya (PCNL)',
-        'Prostatın transuretral rezeksiyası (TURP)',
-        'Sidik kisəsi törəmələrinin transuretral rezeksiyası (TURBT)',
-        'Sistoskopiya',
+    'surg_open' => [
         'Varikoselektomiya',
+        'Hidroselektomiya',
+        'Orxiopeksiya',
+        'Orxiektomiya',
+        'Epididimektomiya',
+        'Spermatoselektomiya',
+        'Vazektomiya',
         'Uretroplastika',
-        'Rekonstruktiv uroloji əməliyyatlar',
+        'Hipospadiyanın cərrahi korreksiyası',
+        'Gizli penisin cərrahi korreksiyası',
+        'Penoskrotal torun korreksiyası',
+        'Testis biopsiyası',
+        'Testis protezinin implantasiyası',
+        'Pieloplastika',
+        'Nefrektomiya',
+        'Qismən nefrektomiya',
+        'Ureteroneosistostomiya',
+        'Nefrostomanın qoyulması',
+        'Sistostomiya (sidik kisəsinin daşının çıxarılması)',
+    ],
+    'surg_endo' => [
+        'Diaqnostik sistoskopiya',
+        'Uretroskopiya',
+        'Ureteroskopiya',
+        'Lazer ureterolitotripsiya (sidik kanalı daşının lazerlə ləğvi)',
+        'Perkutan nefrolitotomiya (PCNL)',
+        'Transuretral prostat rezeksiyası (TURP)',
+        'Sidik kisəsi şişinin transuretral rezeksiyası (TURBT)',
+        'Sistolitotripsiya (sidik kisəsi daşının lazerlə ləğvi)',
+        'Uretranın daxili optik uretrotomiyası (DVIU)',
+        'Double-J stentinin qoyulması və çıxarılması',
+        'Ureterin endoskopik daş ekstraksiyası',
+        'Vezikoureteral reflüksün endoskopik korreksiyası',
     ],
     'surg_child' => [
         'Uşaq sünnəti (sirkumsiziya)',
@@ -172,15 +198,15 @@ $SERVICES = [
 
 /* ---------------- Təhsil ---------------- */
 $EDUCATION = [
-    ['years' => '2008–2015', 'title' => 'Stavropol Dövlət Tibb Universiteti', 'descr' => "Rusiya Federasiyası\nFakültə: Müalicə işi", 'label' => '🎓 Ali tibb təhsili'],
-    ['years' => '2015–2017', 'title' => 'Stavropol Dövlət Tibb Universiteti', 'descr' => "Rusiya Federasiyası\nİxtisas: Urologiya-Andrologiya", 'label' => '🩺 Klinik ordinatura'],
+    ['years' => '2008–2015', 'title' => 'Stavropol Dövlət Tibb Universiteti', 'descr' => "Rusiya Federasiyası\nFakültə: Müalicə işi", 'label' => 'Ali tibb təhsili'],
+    ['years' => '2015–2017', 'title' => 'Stavropol Dövlət Tibb Universiteti', 'descr' => "Rusiya Federasiyası\nİxtisas: Urologiya-Andrologiya", 'label' => 'Klinik ordinatura'],
 ];
 
 /* ---------------- SEO ---------------- */
 $SEO = [
     'home' => [
         'title' => 'Dr. Xaliq Rzayev — Uroloq-Androloq | Böyüklər və uşaqlar üçün urologiya',
-        'descr' => 'Dr. Xaliq Rzayev — böyüklər və uşaqlar üçün uroloji müayinə, diaqnostika və cərrahi müalicə. Endoskopik, rekonstruktiv, andrologik və uşaq uroloji əməliyyatlar. ☎ +994 55 622 54 53',
+        'descr' => 'Dr. Xaliq Rzayev — böyüklər və uşaqlar üçün uroloji müayinə, diaqnostika və cərrahi müalicə. Endoskopik, rekonstruktiv, andrologik və uşaq uroloji əməliyyatlar. ☎ +994 50 622 54 53',
         'robots' => 'index,follow',
     ],
 ];

@@ -23,11 +23,11 @@ $ogImage = SITE_URL . img($IMAGES['og_image']);
 <meta property="og:image" content="<?= e($ogImage) ?>">
 <meta name="twitter:card" content="summary_large_image">
 <?php endif; ?>
-<meta name="theme-color" content="#0f8b8d">
+<meta name="theme-color" content="#0e1a2b">
 <link rel="icon" href="<?= e(img('favicon.svg')) ?>" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
 <?php if (!empty($page['schema'])): ?>
 <script type="application/ld+json"><?= json_encode([

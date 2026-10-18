@@ -124,14 +124,6 @@ function icon(string $name): string {
     return $icons[$name] ?? '';
 }
 
-/** Siyahını <li>-lərə çevirir, ilk $visible elementdən sonrakıları gizlədir */
-function check_list(array $items, int $visible): string {
-    $out = '';
-    foreach ($items as $i => $t) {
-        $out .= '<li' . ($i >= $visible ? ' class="more"' : '') . '>' . e($t) . '</li>';
-    }
-    return $out;
-}
 
 /**
  * Səhifəni yığır: layout/head + layout/header + sections/* + layout/footer.

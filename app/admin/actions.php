@@ -51,7 +51,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
     }
 
     if ($section === 'highlights' && $act === 'save') {
-        flash(rows_msg(save_rows($db, 'highlights', ['icon', 'title', 'descr'], 'title')));
+        flash(rows_msg(save_rows($db, 'highlights', ['title', 'descr'], 'title')));
         redirect('index.php?section=highlights');
     }
 
