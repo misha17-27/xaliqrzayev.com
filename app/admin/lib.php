@@ -17,6 +17,53 @@ function cfg(string $k, $default = null) {
 }
 function redirect(string $to): void { header('Location: ' . $to); exit; }
 
+/* ---------------- Panelin dili: AZ / RU ---------------- */
+const ADMIN_LANGS = ['az' => 'AZ', 'ru' => 'RU'];
+const ADMIN_LANG_DEFAULT = 'az';
+
+/** Cari dil: ?lang= (cookie-yə yazılır) → cookie → defolt */
+function admin_lang(): string {
+    static $lang = null;
+    if ($lang !== null) return $lang;
+    $q = (string)($_GET['lang'] ?? '');
+    if (isset(ADMIN_LANGS[$q])) {
+        $lang = $q;
+        if (!headers_sent()) {
+            setcookie('xradm_lang', $q, ['expires' => time() + 31536000, 'path' => '/', 'httponly' => true, 'samesite' => 'Lax', 'secure' => is_https()]);
+        }
+        return $lang;
+    }
+    $c = (string)($_COOKIE['xradm_lang'] ?? '');
+    return $lang = isset(ADMIN_LANGS[$c]) ? $c : ADMIN_LANG_DEFAULT;
+}
+
+/**
+ * Tərcümə. Açar — rus mətni (kodda yazılan), lüğət: app/admin/lang/az.php.
+ * Dəyişənlər sprintf ilə: t('Добавлено: %d.', $n)
+ */
+function t(string $s, ...$args): string {
+    static $dict = null;
+    if (admin_lang() !== 'ru') {
+        if ($dict === null) {
+            $f = __DIR__ . '/lang/' . admin_lang() . '.php';
+            $dict = is_file($f) ? (array)require $f : [];
+        }
+        if (isset($dict[$s]) && $dict[$s] !== '') $s = $dict[$s];
+    }
+    return $args ? vsprintf($s, $args) : $s;
+}
+
+/** AZ | RU keçidi — cari səhifənin ünvanını saxlayır */
+function lang_switch(): string {
+    $qs = $_GET;
+    $out = '<span class="langsw" title="Dil / Язык">';
+    foreach (ADMIN_LANGS as $code => $label) {
+        $qs['lang'] = $code;
+        $out .= '<a' . ($code === admin_lang() ? ' class="on"' : '') . ' href="index.php?' . e(http_build_query($qs)) . '">' . $label . '</a>';
+    }
+    return $out . '</span>';
+}
+
 /* ---------------- sessiya / auth ---------------- */
 function is_https(): bool {
     $h = $_SERVER['HTTPS'] ?? '';
@@ -201,26 +248,26 @@ function uploads_dir(): string { return PUBLIC_DIR . '/assets/img/uploads'; }
 function admin_upload(string $field, string &$err = ''): ?string {
     if (empty($_FILES[$field]['name'])) return null;
     $f = $_FILES[$field];
-    if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) { $err = 'Ошибка загрузки (код ' . (int)$f['error'] . ')'; return null; }
-    if (!is_uploaded_file($f['tmp_name']))  { $err = 'Файл не получен'; return null; }
-    if ($f['size'] > UPLOAD_MAX_BYTES)      { $err = 'Файл больше 15 МБ'; return null; }
+    if (($f['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) { $err = t('Ошибка загрузки (код ') . (int)$f['error'] . ')'; return null; }
+    if (!is_uploaded_file($f['tmp_name']))  { $err = t('Файл не получен'); return null; }
+    if ($f['size'] > UPLOAD_MAX_BYTES)      { $err = t('Файл больше 15 МБ'); return null; }
 
     $name = preg_replace('/[^A-Za-z0-9._-]/', '_', basename((string)$f['name']));
     $ext  = strtolower(pathinfo((string)$name, PATHINFO_EXTENSION));
-    if (!isset(UPLOAD_TYPES[$ext])) { $err = 'Разрешены только JPG, PNG, WEBP, GIF'; return null; }
+    if (!isset(UPLOAD_TYPES[$ext])) { $err = t('Разрешены только JPG, PNG, WEBP, GIF'); return null; }
 
     $info = @getimagesize($f['tmp_name']);
-    if ($info === false || !str_starts_with((string)$info['mime'], 'image/')) { $err = 'Файл не является изображением'; return null; }
+    if ($info === false || !str_starts_with((string)$info['mime'], 'image/')) { $err = t('Файл не является изображением'); return null; }
     if (class_exists('finfo')) {
         $mime = (string)(new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
-        if (!str_starts_with($mime, 'image/')) { $err = 'Файл не является изображением'; return null; }
+        if (!str_starts_with($mime, 'image/')) { $err = t('Файл не является изображением'); return null; }
     }
 
     $dir = uploads_dir();
     if (!is_dir($dir)) @mkdir($dir, 0755, true);
     $base = mb_substr(pathinfo((string)$name, PATHINFO_FILENAME), 0, 50);
     $safe = date('Ymd') . '_' . bin2hex(random_bytes(4)) . '_' . $base . '.' . $ext;
-    if (!move_uploaded_file($f['tmp_name'], "$dir/$safe")) { $err = 'Не удалось сохранить файл'; return null; }
+    if (!move_uploaded_file($f['tmp_name'], "$dir/$safe")) { $err = t('Не удалось сохранить файл'); return null; }
     @chmod("$dir/$safe", 0644);
 
     image_optimize("$dir/$safe", $ext);
@@ -325,7 +372,7 @@ const SITE_ANCHORS = ['services' => '#diaqnostika', 'education' => '#tehsil', 'c
 
 function require_admin(): void {
     require_login();
-    if (!is_admin()) { flash('Недостаточно прав (нужна роль Администратор).', 'err'); redirect('index.php?section=overview'); }
+    if (!is_admin()) { flash(t('Недостаточно прав (нужна роль Администратор).'), 'err'); redirect('index.php?section=overview'); }
 }
 
 function unread_count(): int {
@@ -340,10 +387,10 @@ function admin_asset(string $path): string {
 }
 
 function head_html(string $title): void {
-    echo '<!doctype html><html lang="ru"><head><meta charset="utf-8">';
+    echo '<!doctype html><html lang="' . admin_lang() . '"><head><meta charset="utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     echo '<meta name="robots" content="noindex,nofollow">';
-    echo '<title>' . e($title) . ' — xaliqrzayev.com admin</title>';
+    echo '<title>' . e(t($title)) . ' — xaliqrzayev.com admin</title>';
     echo '<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">';
     echo '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
     echo '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
@@ -351,7 +398,7 @@ function head_html(string $title): void {
 }
 
 function brand_html(): string {
-    return '<div class="logo"><i>XR</i><span>Dr. Xaliq Rzayev<small>панель управления</small></span></div>';
+    return t('<div class="logo"><i>XR</i><span>Dr. Xaliq Rzayev<small>панель управления</small></span></div>');
 }
 
 function layout_top(string $active, string $title): void {
@@ -362,23 +409,23 @@ function layout_top(string $active, string $title): void {
 
     echo '<aside class="side"><div class="brand">' . brand_html() . '</div><nav>';
     foreach (GROUPS as $glabel => $keys) {
-        echo '<div class="navgroup">' . e($glabel) . '</div>';
+        echo '<div class="navgroup">' . e(t($glabel)) . '</div>';
         foreach ($keys as $key) {
             if (in_array($key, ADMIN_ONLY, true) && !is_admin()) continue;
             [$label, $ic] = SECTIONS[$key];
             $cls = $key === $active ? ' class="on"' : '';
             $badge = ($key === 'submissions' && $unread) ? '<b class="badge">' . $unread . '</b>' : '';
-            echo '<a' . $cls . ' href="index.php?section=' . $key . '"><i>' . $ic . '</i><span>' . e($label) . '</span>' . $badge . '</a>';
+            echo '<a' . $cls . ' href="index.php?section=' . $key . '"><i>' . $ic . '</i><span>' . e(t($label)) . '</span>' . $badge . '</a>';
         }
     }
-    echo '</nav><div class="who">Вы вошли как<br><b>' . e($admin['name'] ?: ($admin['email'] ?? '')) . '</b><br>'
-       . '<span class="role">' . (($admin['role'] ?? '') === 'admin' ? 'Администратор' : 'Редактор') . '</span></div></aside>';
+    echo t('</nav><div class="who">Вы вошли как<br><b>') . e($admin['name'] ?: ($admin['email'] ?? '')) . '</b><br>'
+       . '<span class="role">' . (($admin['role'] ?? '') === 'admin' ? t('Администратор') : t('Редактор')) . '</span></div></aside>';
 
     echo '<main><header class="bar">';
-    echo '<label for="navtoggle" class="burger" title="Меню"><span></span><span></span><span></span></label>';
-    echo '<h1>' . e($title) . '</h1><div class="bar-r">';
-    echo '<a class="btn ghost site" href="../' . (SITE_ANCHORS[$active] ?? '') . '" target="_blank" rel="noopener">Открыть сайт ↗</a> ';
-    echo '<a class="btn" href="index.php?section=logout">Выйти</a></div></header><div class="body">';
+    echo t('<label for="navtoggle" class="burger" title="Меню"><span></span><span></span><span></span></label>');
+    echo '<h1>' . e(t($title)) . '</h1><div class="bar-r">' . lang_switch() . ' ';
+    echo '<a class="btn ghost site" href="../' . (SITE_ANCHORS[$active] ?? '') . t('" target="_blank" rel="noopener">Открыть сайт ↗</a> ');
+    echo t('<a class="btn" href="index.php?section=logout">Выйти</a></div></header><div class="body">');
     echo flash_render();
 }
 function layout_bottom(): void {

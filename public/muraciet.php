@@ -27,14 +27,14 @@ $message = trim((string)($_POST['message'] ?? ''));
 
 /* Bot tələləri: gizli sahə doludursa — səssizcə "uğurlu" cavab */
 if (trim((string)($_POST['website'] ?? '')) !== '') respond(true, $TEXTS['form_ok'], $isAjax);
-if (form_token_check((string)($_POST['_t'] ?? '')) !== 0) respond(false, 'Səhifəni yeniləyib yenidən cəhd edin.', $isAjax);
+if (form_token_check((string)($_POST['_t'] ?? '')) !== 0) respond(false, $TEXTS['form_err_refresh'], $isAjax);
 
-if (mb_strlen($name) < 2 || mb_strlen($name) > 80)              respond(false, 'Adınızı daxil edin.', $isAjax);
+if (mb_strlen($name) < 2 || mb_strlen($name) > 80)              respond(false, $TEXTS['form_err_name'], $isAjax);
 $digits = preg_replace('/\D/', '', $phone);
 if (strlen($digits) < 7 || strlen($digits) > 15 || !preg_match('/^[0-9+()\s-]+$/', $phone))
-                                                               respond(false, 'Telefon nömrəsini düzgün daxil edin.', $isAjax);
-if (mb_strlen($message) > 1500)                                respond(false, 'Mesaj çox uzundur.', $isAjax);
-if (!turnstile_verify((string)($_POST['cf-turnstile-response'] ?? ''))) respond(false, 'Robot olmadığınızı təsdiqləyin.', $isAjax);
+                                                               respond(false, $TEXTS['form_err_phone'], $isAjax);
+if (mb_strlen($message) > 1500)                                respond(false, $TEXTS['form_err_long'], $isAjax);
+if (!turnstile_verify((string)($_POST['cf-turnstile-response'] ?? ''))) respond(false, $TEXTS['form_err_robot'], $isAjax);
 
 $ip  = client_ip();
 $now = date('Y-m-d H:i:s');
@@ -45,7 +45,7 @@ if ($db && $ip !== '') {
     try {
         $st = $db->prepare('SELECT COUNT(*) FROM submissions WHERE ip = ? AND created_at > ?');
         $st->execute([$ip, date('Y-m-d H:i:s', time() - 600)]);
-        if ((int)$st->fetchColumn() >= 3) respond(false, 'Çox sayda müraciət. Bir az sonra yenidən cəhd edin və ya zəng edin.', $isAjax);
+        if ((int)$st->fetchColumn() >= 3) respond(false, $TEXTS['form_err_rate'], $isAjax);
     } catch (Throwable $e) {}
 }
 

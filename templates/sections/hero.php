@@ -7,8 +7,8 @@
       <p class="lead"><?= e($T['hero_lead']) ?></p>
       <p class="desc"><?= e($T['hero_desc']) ?></p>
       <div class="hero-actions">
-        <a class="btn btn-gold" href="<?= e($tel) ?>">Zəng et</a>
-        <a class="btn btn-ghost" href="<?= e($wa) ?>" target="_blank" rel="noopener">WhatsApp</a>
+        <a class="btn btn-gold" href="<?= e($tel) ?>"><?= e($T['btn_call']) ?></a>
+        <a class="btn btn-ghost" href="<?= e($wa) ?>" target="_blank" rel="noopener"><?= e($T['btn_wa']) ?></a>
       </div>
     </div>
     <div class="portrait">
@@ -18,7 +18,7 @@
       <?php endif; ?>
     </div>
   </div>
-  <div class="scroll-hint">Aşağı sürüşdürün</div>
+  <?php if ($T['scroll_hint'] !== ''): ?><div class="scroll-hint"><?= e($T['scroll_hint']) ?></div><?php endif; ?>
 </section>
 
 <?php if ($HIGHLIGHTS): ?>

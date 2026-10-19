@@ -6,7 +6,7 @@
       <aside class="reveal">
         <h3><?= e($T['surg_aside_title']) ?></h3>
         <p><?= e($T['surg_sub']) ?></p>
-        <a class="btn btn-gold" style="margin-top:24px" href="#elaqe">Məsləhət al</a>
+        <a class="btn btn-gold" style="margin-top:24px" href="#elaqe"><?= e($T['btn_consult']) ?></a>
       </aside>
       <div>
         <?php if (!empty($SERVICES['surg_open']) || !empty($SERVICES['surg_endo'])): ?>

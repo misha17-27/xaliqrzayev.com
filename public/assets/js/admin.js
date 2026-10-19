@@ -112,7 +112,8 @@
     el.insertAdjacentElement('afterend', out);
     var upd = function () {
       var n = el.value.length;
-      out.textContent = n + ' / ' + max + (min ? ' (рекомендуется ' + min + '–' + max + ')' : '');
+      var rec = document.documentElement.lang === 'ru' ? 'рекомендуется' : 'tövsiyə olunur';
+      out.textContent = n + ' / ' + max + (min ? ' (' + rec + ' ' + min + '–' + max + ')' : '');
       out.classList.toggle('over', n > max);
       out.classList.toggle('under', min > 0 && n < min);
     };

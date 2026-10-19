@@ -56,8 +56,8 @@
       ev.preventDefault();
       var name = form.elements.name.value.trim();
       var phone = form.elements.phone.value.replace(/\D/g, '');
-      if (name.length < 2) { show(false, 'Adınızı daxil edin.'); form.elements.name.focus(); return; }
-      if (phone.length < 7) { show(false, 'Telefon nömrəsini düzgün daxil edin.'); form.elements.phone.focus(); return; }
+      if (name.length < 2) { show(false, form.dataset.errName); form.elements.name.focus(); return; }
+      if (phone.length < 7) { show(false, form.dataset.errPhone); form.elements.phone.focus(); return; }
 
       btn.disabled = true;
       fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'fetch' } })
@@ -67,7 +67,7 @@
           if (j.ok) form.reset();
           if (window.turnstile) try { window.turnstile.reset(); } catch (e) {}
         })
-        .catch(function () { show(false, 'Xəta baş verdi. Zəhmət olmasa zəng edin.'); })
+        .catch(function () { show(false, form.dataset.errNet); })
         .then(function () { btn.disabled = false; });
     });
   }

@@ -34,7 +34,7 @@ function save_rows(PDO $db, string $table, array $cols, string $keyCol, array $e
 }
 function rows_msg(array $r): string {
     [$a, , $d] = $r;
-    return 'Сохранено.' . ($a ? " Добавлено: $a." : '') . ($d ? " Удалено: $d." : '');
+    return t('Сохранено.') . ($a ? ' ' . t('Добавлено: %d.', $a) : '') . ($d ? ' ' . t('Удалено: %d.', $d) : '');
 }
 
 /**
@@ -44,9 +44,9 @@ function rows_msg(array $r): string {
  */
 function rows_editor(array $rows, array $fields, int $extra): void {
     for ($i = 0; $i < $extra; $i++) $rows[] = ['visible' => 1, 'sort' => ''];
-    echo '<div class="tablewrap"><table class="rows"><thead><tr><th class="c" title="Порядок">⇅</th>';
+    echo t('<div class="tablewrap"><table class="rows"><thead><tr><th class="c" title="Порядок">⇅</th>');
     foreach ($fields as [$lbl]) echo '<th>' . e($lbl) . '</th>';
-    echo '<th class="c">Показ</th><th class="c">Удалить</th></tr></thead><tbody data-sortable>';
+    echo t('<th class="c">Показ</th><th class="c">Удалить</th></tr></thead><tbody data-sortable>');
     foreach ($rows as $i => $r) {
         $new = empty($r['id']);
         $cls = [];
@@ -57,18 +57,18 @@ function rows_editor(array $rows, array $fields, int $extra): void {
            . '<input type="hidden" name="r[' . $i . '][id]" value="' . e($r['id'] ?? '') . '">'
            . '<input type="hidden" name="r[' . $i . '][sort]" value="' . e($r['sort'] ?? '') . '" data-sort>'
            . ($new ? '<span class="newmark">+</span>'
-                   : '<span class="handle" title="Перетащите">⋮⋮</span><span class="moves"><button type="button" class="mv" data-move="-1" title="Выше">↑</button><button type="button" class="mv" data-move="1" title="Ниже">↓</button></span>')
+                   : t('<span class="handle" title="Перетащите">⋮⋮</span><span class="moves"><button type="button" class="mv" data-move="-1" title="Выше">↑</button><button type="button" class="mv" data-move="1" title="Ниже">↓</button></span>'))
            . '</td>';
         foreach ($fields as $name => [$lbl, $type]) {
             $v = $r[$name] ?? '';
-            $ph = $new ? ' placeholder="Новый пункт…"' : '';
+            $ph = $new ? t(' placeholder="Новый пункт…"') : '';
             echo '<td data-label="' . e($lbl) . '">';
             if ($type === 'textarea') echo '<textarea name="r[' . $i . '][' . $name . ']" style="min-height:58px"' . $ph . '>' . e($v) . '</textarea>';
             else echo '<input type="text" name="r[' . $i . '][' . $name . ']" value="' . e($v) . '"' . $ph . '>';
             echo '</td>';
         }
-        echo '<td class="c" data-label="Показ"><input type="checkbox" name="r[' . $i . '][visible]" value="1"' . (!empty($r['visible']) ? ' checked' : '') . '></td>';
-        echo '<td class="c" data-label="Удалить">' . ($new ? '' : '<input type="checkbox" name="r[' . $i . '][del]" value="1" class="del">') . '</td></tr>';
+        echo t('<td class="c" data-label="Показ"><input type="checkbox" name="r[') . $i . '][visible]" value="1"' . (!empty($r['visible']) ? ' checked' : '') . '></td>';
+        echo t('<td class="c" data-label="Удалить">') . ($new ? '' : '<input type="checkbox" name="r[' . $i . '][del]" value="1" class="del">') . '</td></tr>';
     }
     echo '</tbody></table></div>';
 }

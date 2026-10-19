@@ -48,6 +48,41 @@ $TEXTS = [
     'form_ok'          => 'Müraciətiniz qəbul olundu. Tezliklə sizinlə əlaqə saxlanılacaq.',
 
     'footer_text'      => 'Uroloq-Androloq',
+
+    /* Menyu və düymələr */
+    'nav_about'        => 'Haqqımda',
+    'nav_diag'         => 'Diaqnostika',
+    'nav_surg'         => 'Cərrahiyyə',
+    'nav_edu'          => 'Təhsil',
+    'nav_contact'      => 'Əlaqə',
+    'btn_header'       => 'Qəbul',
+    'btn_call'         => 'Zəng et',
+    'btn_wa'           => 'WhatsApp',
+    'btn_wa_write'     => 'WhatsApp-a yaz',
+    'btn_consult'      => 'Məsləhət al',
+    'scroll_hint'      => 'Aşağı sürüşdürün',
+    'contact_card_label' => 'Telefon / WhatsApp',
+
+    /* Qəbul formu */
+    'form_sub'         => 'Adınızı və nömrənizi yazın — sizə zəng edək.',
+    'form_name'        => 'Ad, soyad',
+    'form_phone'       => 'Telefon',
+    'form_phone_ph'    => '+994 __ ___ __ __',
+    'form_msg'         => 'Şikayət / sual',
+    'form_optional'    => 'istəyə bağlı',
+    'form_btn'         => 'Göndər',
+    'form_err_name'    => 'Adınızı daxil edin.',
+    'form_err_phone'   => 'Telefon nömrəsini düzgün daxil edin.',
+    'form_err_long'    => 'Mesaj çox uzundur.',
+    'form_err_robot'   => 'Robot olmadığınızı təsdiqləyin.',
+    'form_err_refresh' => 'Səhifəni yeniləyib yenidən cəhd edin.',
+    'form_err_rate'    => 'Çox sayda müraciət. Bir az sonra yenidən cəhd edin və ya zəng edin.',
+    'form_err_net'     => 'Xəta baş verdi. Zəhmət olmasa zəng edin.',
+
+    /* 404 */
+    'nf_title'         => 'Səhifə tapılmadı',
+    'nf_text'          => 'Axtardığınız səhifə mövcud deyil və ya köçürülüb.',
+    'nf_btn'           => 'Ana səhifə',
 ];
 
 /* ---------------- Əlaqə ---------------- */
