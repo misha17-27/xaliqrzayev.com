@@ -5,17 +5,14 @@ boot_session();
 
 $section = preg_replace('/[^a-z_]/', '', (string)($_GET['section'] ?? 'overview'));
 
-/* ---------------- baza qurulmayıbsa ---------------- */
-try {
-    pdo()->query('SELECT 1 FROM admins LIMIT 1');
-} catch (Throwable $e) {
-    header('Content-Type: text/html; charset=utf-8');
-    echo '<meta charset="utf-8"><meta name="robots" content="noindex"><style>body{font-family:Montserrat,Arial,sans-serif;max-width:640px;margin:80px auto;padding:0 20px;line-height:1.6;color:#14262c}'
-       . 'code{background:#e3f4f1;padding:2px 8px;border-radius:6px}</style>'
-       . '<h2>Панель ещё не установлена</h2>'
-       . '<p>1. Скопируйте <code>config/config.sample.php</code> → <code>config/config.php</code> и заполните его.</p>'
-       . '<p>2. Откройте один раз <code>/admin/install.php?token=…</code> (токен — в <code>config/config.php</code>).</p>';
-    exit;
+/* ---------------- quraşdırılmayıbsa — brauzerdə sehrbaz ---------------- */
+$installed = false;
+if (is_file(CONFIG_FILE)) {
+    try { pdo()->query('SELECT 1 FROM admins LIMIT 1'); $installed = true; } catch (Throwable $e) {}
+}
+if (!$installed) {
+    require __DIR__ . '/setup.php';
+    setup_wizard(null);
 }
 
 /* ---------------- logout ---------------- */
@@ -42,6 +39,7 @@ if ($section === 'login') {
     echo '<div class="login"><form class="box" method="post">';
     echo brand_html();
     echo '<h2>Вход в панель</h2><div class="sub">Управление контентом сайта</div>';
+    echo flash_render();
     if ($err) echo '<div class="flash err">' . e($err) . '</div>';
     echo csrf_field();
     echo '<label>E-mail</label><input type="email" name="email" required autofocus autocomplete="username">';

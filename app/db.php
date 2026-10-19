@@ -19,7 +19,8 @@ $opts = [
 ];
 
 if (($cfg['driver'] ?? 'sqlite') === 'mysql') {
-    $dsn = "mysql:host={$cfg['db_host']};dbname={$cfg['db_name']};charset=" . ($cfg['db_charset'] ?? 'utf8mb4');
+    $dsn = "mysql:host={$cfg['db_host']};" . (!empty($cfg['db_port']) ? "port={$cfg['db_port']};" : '')
+         . "dbname={$cfg['db_name']};charset=" . ($cfg['db_charset'] ?? 'utf8mb4');
     $pdo = new PDO($dsn, $cfg['db_user'], $cfg['db_pass'], $opts);
 } else {
     $path = $cfg['sqlite_path'] ?? (dirname(__DIR__) . '/storage/admin.sqlite');

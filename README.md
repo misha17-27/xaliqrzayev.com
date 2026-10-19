@@ -105,9 +105,11 @@ tools/router.php            роутер для php -S (на сервер не �
 1. **cPanel → MySQL Databases**: создать базу и пользователя, дать ALL PRIVILEGES.
 2. **cPanel → Git Version Control → Create**: Clone URL репозитория, путь — например `/home/USER/repositories/xaliqrzayev.com`.
 3. Вкладка *Pull or Deploy* → **Deploy HEAD Commit**.
-4. В File Manager создать `/home/USER/xaliqrzayev.com/config/config.php` из `config.sample.php`:
-   `driver => 'mysql'`, данные БД, свой `install_admin_pass` и длинный `install_token`.
-5. Открыть `https://xaliqrzayev.com/admin/install.php?token=…` (повторный запуск безопасен — заполненные таблицы не трогает).
+4. Открыть `https://xaliqrzayev.com/admin/` — пока нет `config/config.php`, там мастер установки:
+   данные базы + логин и пароль администратора → он сам создаёт `config/config.php`, таблицы и пользователя.
+   Мастер принимает только MySQL на `localhost` и после создания конфига отключается.
+5. Если `config/config.php` уже создан вручную, а таблиц нет — `/admin/` попросит `install_token` из конфига
+   и создаст таблицы (то же делает `/admin/install.php?token=…`).
 6. Включить SSL (AutoSSL) и раскомментировать HTTPS-редирект в `public/.htaccess`.
 7. **MultiPHP Manager** → PHP 8.1+.
 
