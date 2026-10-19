@@ -134,7 +134,7 @@ function cms_seed(PDO $db): array {
 /* ---------------- Sxemin yenilənməsi ----------------
    Köhnə bazalara çatışmayan sütunları əlavə edir. settings.schema_version ilə bir dəfə işləyir.
    app/content.php hər sorğuda versiyanı yoxlayır (ucuzdur — settings onsuz da oxunur). */
-const CMS_SCHEMA_VERSION = 2;
+const CMS_SCHEMA_VERSION = 3;
 
 function cms_columns(PDO $db, string $table): array {
     $cols = [];
@@ -159,6 +159,16 @@ function cms_migrate(PDO $db): void {
             if (!in_array($c, $have, true)) $db->exec("ALTER TABLE `$table` ADD COLUMN `$c` $def");
         }
     }
+    /* v3: forma yalnız WhatsApp ilə — mətnlər əl ilə dəyişdirilməyibsə, yenilərinə keçirilir */
+    $texts = [
+        'form_ok'   => ['Müraciətiniz qəbul olundu. Tezliklə sizinlə əlaqə saxlanılacaq.', 'Müraciətiniz hazırdır — WhatsApp açılır. Mesajı göndərməyi unutmayın.'],
+        'form_btn'  => ['Göndər', 'WhatsApp ilə göndər'],
+        'form_sub'  => ['Adınızı və nömrənizi yazın — sizə zəng edək.', 'Adınızı və nömrənizi yazın — müraciət WhatsApp ilə həkimə göndəriləcək.'],
+        'cta_text'  => ['Zəng edin, WhatsApp vasitəsilə yazın və ya formu doldurun — sizin üçün uyğun vaxtı birlikdə təyin edək.', 'Zəng edin və ya formu doldurun — müraciətiniz WhatsApp ilə həkimə göndəriləcək, uyğun vaxtı birlikdə təyin edək.'],
+    ];
+    $upd = $db->prepare('UPDATE texts SET v = ? WHERE k = ? AND v = ?');
+    foreach ($texts as $k => [$old, $new]) $upd->execute([$new, $k, $old]);
+
     $st = $db->prepare('SELECT 1 FROM settings WHERE k = ?'); $st->execute(['schema_version']);
     if ($st->fetch()) $db->prepare('UPDATE settings SET v = ? WHERE k = ?')->execute([(string)CMS_SCHEMA_VERSION, 'schema_version']);
     else $db->prepare('INSERT INTO settings (k, v) VALUES (?, ?)')->execute(['schema_version', (string)CMS_SCHEMA_VERSION]);

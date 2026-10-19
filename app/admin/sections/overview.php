@@ -33,7 +33,6 @@ $checks[] = ['PHP ' . PHP_VERSION, version_compare(PHP_VERSION, '8.0', '>=') ? '
 $checks[] = [t('База: ') . $db->getAttribute(PDO::ATTR_DRIVER_NAME), 'ok', ''];
 $up = uploads_dir();
 $checks[] = [t('Папка загрузок'), (is_dir($up) && is_writable($up)) ? 'ok' : 'warn', t('assets/img/uploads должна быть доступна для записи')];
-$checks[] = [t('Получатель заявок (e-mail)'), setting('mail_to') !== '' ? 'ok' : 'warn', t('Укажите в разделе «Почта (SMTP)» — иначе заявки будут только в панели')];
 $checks[] = [t('Уведомления в WhatsApp'), (setting('wa_api_on') === '1' && setting('wa_api_key') !== '') ? 'ok' : 'warn', t('Настройте в разделе «WhatsApp-уведомления»')];
 $checks[] = [t('Защита от ботов (Turnstile)'), adm_turnstile_on() ? 'ok' : 'warn', t('Рекомендуется включить в разделе «Безопасность»')];
 $tok = (string)cfg('install_token', '');

@@ -1,9 +1,8 @@
 <?php
-/* Bölmə: notify — WhatsApp bildirişləri (TextMeBot / CallMeBot / öz URL) və pasiyent üçün WhatsApp düyməsi. */
+/* Bölmə: notify — WhatsApp bildirişləri (TextMeBot / CallMeBot / öz URL). Pasiyent üçün WhatsApp keçidi həmişə aktivdir. */
 declare(strict_types=1);
 
 $waOn   = setting('wa_api_on') === '1';
-$btnOn  = setting('wa_visitor_btn') !== '0';
 $prov   = setting('wa_api_provider') ?: 'textmebot';
 $phone  = setting('wa_api_phone');
 $sitePh = (string)($CONTACT['whatsapp'] ?? '');
@@ -38,9 +37,8 @@ echo '<div><label>API key</label><input type="password" name="wa_api_key" value=
 echo '<label>' . e(t('Свой URL (только для «Свой URL»)')) . '</label><input type="text" name="wa_api_url" value="' . e(setting('wa_api_url')) . '" placeholder="https://api.example.com/send?to={phone}&amp;key={key}&amp;text={text}">';
 echo '<div class="hint">' . e(t('Подставляются: {phone} — номер цифрами, {text} — текст заявки, {key} — API key.')) . '</div>';
 
-echo '<h4>' . e(t('Кнопка для пациента')) . '</h4>';
-echo '<label class="inline"><input type="checkbox" name="wa_visitor_btn" value="1"' . ($btnOn ? ' checked' : '') . '> ' . e(t('После отправки формы показывать кнопку «отправить заявку в WhatsApp»')) . '</label>';
-echo '<div class="hint">' . e(t('Кнопка открывает WhatsApp пациента с готовым текстом заявки на номер врача. Работает без настроек. Текст кнопки — в «Тексты сайта» → «Форма записи».')) . '</div>';
+echo '<h4>' . e(t('Как заявка попадает в WhatsApp')) . '</h4>';
+echo '<p class="muted">' . e(t('После нажатия «Göndər» у пациента сразу открывается WhatsApp с готовым текстом заявки на номер врача — остаётся нажать «Отправить». Заявка также сохраняется в разделе «Заявки с сайта». Автоматическая отправка выше — дополнительная: врач получит заявку, даже если пациент не нажмёт «Отправить» в WhatsApp.')) . '</p>';
 
 echo '<p><button class="btn">' . e(t('Сохранить')) . '</button></p></form>';
 

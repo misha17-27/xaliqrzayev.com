@@ -1,6 +1,6 @@
 <?php
 /* Admin panelinin ortaq köməkçiləri: PDO, auth, CSRF, yükləmə, layout.
-   app/bootstrap.php artıq yüklənib (e(), mailer, sabitlər). */
+   app/bootstrap.php artıq yüklənib (e(), sabitlər). */
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/schema.php';
@@ -229,9 +229,6 @@ function kv_set(string $table, string $key, string $val): void {
 }
 function setting(string $k): string { return kv_get('settings', $k); }
 
-function smtp_send(string $to, string $subject, string $body, string &$err = ''): bool {
-    return smtp_send_with('setting', $to, $subject, $body, $err);
-}
 
 /* ---------------- fayl yükləmə ---------------- */
 const UPLOAD_TYPES = [
@@ -354,7 +351,6 @@ const SECTIONS = [
     'contacts'    => ['Контакты и соцсети', '☏'],
     'submissions' => ['Заявки с сайта', '✉'],
     'seo'         => ['SEO и аналитика', '☌'],
-    'smtp'        => ['Почта (SMTP)', '✉'],
     'notify'      => ['WhatsApp-уведомления', '✆'],
     'security'    => ['Безопасность', '⚿'],
     'backup'      => ['Резервная копия', '⤓'],
@@ -364,9 +360,9 @@ const SECTIONS = [
 const GROUPS = [
     'ОСНОВНОЕ'  => ['overview', 'submissions'],
     'КОНТЕНТ'   => ['texts', 'services', 'highlights', 'education', 'images', 'contacts'],
-    'НАСТРОЙКИ' => ['seo', 'smtp', 'notify', 'security', 'backup', 'users', 'profile'],
+    'НАСТРОЙКИ' => ['seo', 'notify', 'security', 'backup', 'users', 'profile'],
 ];
-const ADMIN_ONLY = ['users', 'smtp', 'notify', 'security', 'backup'];
+const ADMIN_ONLY = ['users', 'notify', 'security', 'backup'];
 
 /* «Открыть на сайте» — bölməyə uyğun lövbər */
 const SITE_ANCHORS = ['services' => '#diaqnostika', 'education' => '#tehsil', 'contacts' => '#elaqe', 'submissions' => '#elaqe'];

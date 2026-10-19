@@ -146,29 +146,9 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         flash(t('Настройки безопасности сохранены.')); redirect('index.php?section=security');
     }
 
-    if ($section === 'smtp') {
-        if ($act === 'save') {
-            foreach (['smtp_host', 'smtp_port', 'smtp_user', 'smtp_from', 'smtp_from_name', 'smtp_secure'] as $k)
-                kv_set('settings', $k, trim((string)($_POST[$k] ?? '')));
-            if (($_POST['smtp_pass'] ?? '') !== '') kv_set('settings', 'smtp_pass', (string)$_POST['smtp_pass']);
-            $to = trim((string)($_POST['mail_to'] ?? ''));
-            if ($to !== '' && !filter_var($to, FILTER_VALIDATE_EMAIL)) flash(t('Некорректный e-mail получателя.'), 'err');
-            else kv_set('settings', 'mail_to', $to);
-            flash(t('Настройки почты сохранены.'));
-        } elseif ($act === 'test') {
-            $err = ''; $to = trim((string)($_POST['test_to'] ?? ''));
-            if (!filter_var($to, FILTER_VALIDATE_EMAIL)) flash(t('Укажите корректный e-mail.'), 'err');
-            elseif (smtp_send($to, t('Тест SMTP — xaliqrzayev.com'), t("Это тестовое письмо из админ-панели.\nЕсли вы его получили — SMTP настроен верно."), $err))
-                flash(t('Тестовое письмо отправлено на ') . $to);
-            else flash(t('Ошибка отправки: ') . $err, 'err');
-        }
-        redirect('index.php?section=smtp');
-    }
-
     if ($section === 'notify') {
         if ($act === 'save') {
             kv_set('settings', 'wa_api_on', !empty($_POST['wa_api_on']) ? '1' : '0');
-            kv_set('settings', 'wa_visitor_btn', !empty($_POST['wa_visitor_btn']) ? '1' : '0');
             $ph = trim((string)($_POST['wa_api_phone'] ?? ''));
             if ($ph !== '' && strlen(preg_replace('/\D/', '', $ph)) < 9) flash(t('Номер WhatsApp указан неверно.'), 'err');
             else kv_set('settings', 'wa_api_phone', $ph);
@@ -276,9 +256,9 @@ if ($section === 'submissions' && ($_GET['export'] ?? '') === 'csv') {
     header('Content-Disposition: attachment; filename="zayavki-' . date('Y-m-d') . '.csv"');
     $out = fopen('php://output', 'w');
     fwrite($out, "\xEF\xBB\xBF");   // Excel üçün UTF-8 BOM
-    fputcsv($out, ['ID', t('Дата'), t('Имя'), t('Телефон'), 'E-mail', t('Сообщение'), t('Статус'), t('Заметка'), t('Уведомления')], ';');
+    fputcsv($out, ['ID', t('Дата'), t('Имя'), t('Телефон'), t('Сообщение'), t('Статус'), t('Заметка'), t('Уведомления')], ';');
     foreach ($db->query('SELECT * FROM submissions ORDER BY id DESC') as $r) {
-        $row = [$r['id'], $r['created_at'], $r['name'], $r['phone'], $r['email'] ?? '', $r['message'], t(SUB_STATUS[$r['status']] ?? $r['status']), $r['note'], $r['notified'] ?? ''];
+        $row = [$r['id'], $r['created_at'], $r['name'], $r['phone'], $r['message'], t(SUB_STATUS[$r['status']] ?? $r['status']), $r['note'], $r['notified'] ?? ''];
         /* Excel düstur inyeksiyasının qarşısı */
         $row = array_map(function ($v) { $v = (string)$v; return preg_match('/^[=+\-@]/', $v) ? "'" . $v : $v; }, $row);
         fputcsv($out, $row, ';');

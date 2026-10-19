@@ -85,7 +85,7 @@ const BACKUP_TABLES = [
     'seo_pages'  => ['slug', 'title', 'descr', 'robots'],
 ];
 /* settings-dən yalnız təhlükəsiz açarlar */
-const BACKUP_SETTINGS = ['photo_hero', 'og_image', 'ga_id', 'mail_to'];
+const BACKUP_SETTINGS = ['photo_hero', 'og_image', 'ga_id'];
 
 function backup_export(PDO $db): array {
     $out = ['_format' => BACKUP_FORMAT, '_created' => date('Y-m-d H:i:s')];

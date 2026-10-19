@@ -58,8 +58,6 @@
       var phone = form.elements.phone.value.replace(/\D/g, '');
       if (name.length < 2) { show(false, form.dataset.errName); form.elements.name.focus(); return; }
       if (phone.length < 7) { show(false, form.dataset.errPhone); form.elements.phone.focus(); return; }
-      var email = form.elements.email ? form.elements.email.value.trim() : '';
-      if (email !== '' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { show(false, form.dataset.errEmail); form.elements.email.focus(); return; }
 
       btn.disabled = true;
       fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'X-Requested-With': 'fetch' } })
@@ -67,12 +65,14 @@
         .then(function (j) {
           show(j.ok, j.msg);
           if (j.ok && j.wa) {
-            /* Pasiyent müraciəti öz WhatsApp-ı ilə də göndərə bilər */
+            /* Müraciət WhatsApp ilə göndərilir: həkimin nömrəsinə hazır mesaj açılır.
+               Brauzer yönləndirməni bloklasa — düymə qalır. */
             var a = document.createElement('a');
             a.className = 'btn btn-wa form-wa';
-            a.href = j.wa; a.target = '_blank'; a.rel = 'noopener';
+            a.href = j.wa; a.rel = 'noopener';
             a.textContent = j.wa_label;
             msg.appendChild(a);
+            setTimeout(function () { window.location.href = j.wa; }, 600);
           }
           if (j.ok) form.reset();
           if (window.turnstile) try { window.turnstile.reset(); } catch (e) {}

@@ -20,16 +20,12 @@ define('CONFIG_FILE', ROOT . '/config/config.php');
 if (!defined('BASE_URL')) define('BASE_URL', '');
 define('SITE_URL', 'https://xaliqrzayev.com');
 
-/* Müraciətlərin göndəriləcəyi ünvan (paneldən dəyişdirilə bilər) */
-define('MAIL_TO', '');
-
 /* Cloudflare Turnstile — açarlar paneldə (Безопасность). Boşdursa kapça sönülüdür. */
 define('TURNSTILE_SITE', '');
 define('TURNSTILE_SECRET', '');
 
 require_once APP_DIR . '/compat.php';
 require_once APP_DIR . '/functions.php';
-require_once APP_DIR . '/mailer.php';
 
 require APP_DIR . '/defaults.php';
 

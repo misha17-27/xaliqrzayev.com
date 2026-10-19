@@ -40,7 +40,7 @@ function cms_setting(string $k, string $default = ''): string { return cms_kv('s
 
 if ($db = cms_db()) {
     /* Köhnə bazada sxem yenilənməyibsə — bir dəfə miqrasiya */
-    if ((int)(cms_kv('settings')['schema_version'] ?? 0) < 2) {
+    if ((int)(cms_kv('settings')['schema_version'] ?? 0) < 3) {   // = CMS_SCHEMA_VERSION
         try { require_once APP_DIR . '/schema.php'; cms_migrate($db); } catch (Throwable $e) {}
     }
     try {

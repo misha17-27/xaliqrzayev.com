@@ -43,9 +43,9 @@ $TEXTS = [
 
     'cta_tag'          => 'Əlaqə',
     'cta_title'        => 'Qəbula yazılın',
-    'cta_text'         => 'Zəng edin, WhatsApp vasitəsilə yazın və ya formu doldurun — sizin üçün uyğun vaxtı birlikdə təyin edək.',
+    'cta_text'         => 'Zəng edin və ya formu doldurun — müraciətiniz WhatsApp ilə həkimə göndəriləcək, uyğun vaxtı birlikdə təyin edək.',
     'form_title'       => 'Onlayn müraciət',
-    'form_ok'          => 'Müraciətiniz qəbul olundu. Tezliklə sizinlə əlaqə saxlanılacaq.',
+    'form_ok'          => 'Müraciətiniz hazırdır — WhatsApp açılır. Mesajı göndərməyi unutmayın.',
 
     'footer_text'      => 'Uroloq-Androloq',
 
@@ -64,23 +64,21 @@ $TEXTS = [
     'contact_card_label' => 'Telefon / WhatsApp',
 
     /* Qəbul formu */
-    'form_sub'         => 'Adınızı və nömrənizi yazın — sizə zəng edək.',
+    'form_sub'         => 'Adınızı və nömrənizi yazın — müraciət WhatsApp ilə həkimə göndəriləcək.',
     'form_name'        => 'Ad, soyad',
     'form_phone'       => 'Telefon',
     'form_phone_ph'    => '+994 __ ___ __ __',
-    'form_email'       => 'E-poçt',
     'form_msg'         => 'Şikayət / sual',
     'form_optional'    => 'istəyə bağlı',
-    'form_btn'         => 'Göndər',
+    'form_btn'         => 'WhatsApp ilə göndər',
     'form_err_name'    => 'Adınızı daxil edin.',
     'form_err_phone'   => 'Telefon nömrəsini düzgün daxil edin.',
-    'form_err_email'   => 'E-poçt ünvanını düzgün daxil edin.',
     'form_err_long'    => 'Mesaj çox uzundur.',
     'form_err_robot'   => 'Robot olmadığınızı təsdiqləyin.',
     'form_err_refresh' => 'Səhifəni yeniləyib yenidən cəhd edin.',
     'form_err_rate'    => 'Çox sayda müraciət. Bir az sonra yenidən cəhd edin və ya zəng edin.',
     'form_err_net'     => 'Xəta baş verdi. Zəhmət olmasa zəng edin.',
-    'form_wa_btn'      => 'Müraciəti WhatsApp-a da göndər',
+    'form_wa_btn'      => 'WhatsApp-da göndər',
     'form_wa_intro'    => 'Salam! Saytdan qəbula yazılmaq istəyirəm.',
 
     /* 404 */
@@ -94,7 +92,6 @@ $CONTACT = [
     'phone'     => '+994 50 622 54 53',
     'phone_raw' => '+994506225453',
     'whatsapp'  => '994506225453',
-    'email'     => '',
     'address'   => '',
     'hours'     => '',
     'map'       => '',     // Google Maps embed src

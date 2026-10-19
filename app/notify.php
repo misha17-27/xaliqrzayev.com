@@ -1,42 +1,22 @@
 <?php
 /*
- * Müraciət bildirişləri: e-poçt, WhatsApp (TextMeBot / CallMeBot / öz URL) və pasiyent üçün WhatsApp keçidi.
+ * Müraciət bildirişləri — yalnız WhatsApp: API (TextMeBot / CallMeBot / öz URL) və pasiyent üçün WhatsApp keçidi.
  *
- * Ayarlar (settings cədvəli, admin → «WhatsApp-bildiriş» və «Poçt (SMTP)»):
- *   mail_to         — müraciətlərin göndəriləcəyi e-poçt
+ * Ayarlar (settings cədvəli, admin → «WhatsApp bildirişləri»):
  *   wa_api_on       — '1' olarsa API ilə avtomatik göndər
  *   wa_api_provider — textmebot | callmebot | custom
  *   wa_api_url      — custom üçün URL şablonu: {phone} {text} {key}
  *   wa_api_phone    — bildiriş alan nömrə (boşdursa — saytdakı WhatsApp nömrəsi)
  *   wa_api_key      — xidmətin verdiyi apikey
- *   wa_visitor_btn  — '0' deyilsə, göndərişdən sonra pasiyentə «WhatsApp-a da göndər» düyməsi göstərilir
  */
 declare(strict_types=1);
 
-/** Bildiriş mətni (e-poçt və WhatsApp üçün eyni) */
+/** Bildiriş mətni */
 function submission_text(array $s, bool $withMeta = true): string {
     $t = "Saytdan yeni müraciət\n\nAd: {$s['name']}\nTelefon: {$s['phone']}\n";
-    if (($s['email'] ?? '') !== '')   $t .= "E-poçt: {$s['email']}\n";
     if (($s['message'] ?? '') !== '') $t .= "Mesaj:\n{$s['message']}\n";
     if ($withMeta) $t .= "\nTarix: {$s['created_at']}\nIP: {$s['ip']}\n";
     return $t;
-}
-
-/** E-poçt: SMTP (doldurulubsa) və ya hostinqin mail() funksiyası */
-function notify_email(array $s, callable $setting): bool {
-    $to = (string)$setting('mail_to') ?: (defined('MAIL_TO') ? MAIL_TO : '');
-    if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) return false;
-    $subject = 'Yeni müraciət — ' . $s['name'];
-    $body    = submission_text($s);
-    $reply   = filter_var($s['email'] ?? '', FILTER_VALIDATE_EMAIL) ? (string)$s['email'] : '';
-    if ((string)$setting('smtp_host') !== '') {
-        $err = '';
-        return smtp_send_with($setting, $to, $subject, $body, $err, $reply);
-    }
-    $host = parse_url(SITE_URL, PHP_URL_HOST) ?: 'localhost';
-    $hdr  = "From: no-reply@$host\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8"
-          . ($reply !== '' ? "\r\nReply-To: <$reply>" : '');
-    return @mail($to, '=?UTF-8?B?' . base64_encode($subject) . '?=', $body, $hdr);
 }
 
 /** WhatsApp nömrəsi: yalnız rəqəmlər */
@@ -86,7 +66,6 @@ function wa_visitor_link(array $s, array $contact, string $intro): string {
     $num = wa_digits((string)($contact['whatsapp'] ?? '') ?: (string)($contact['phone_raw'] ?? ''));
     if ($num === '') return '';
     $t = trim($intro) . "\n\nAd: {$s['name']}\nTelefon: {$s['phone']}";
-    if (($s['email'] ?? '') !== '')   $t .= "\nE-poçt: {$s['email']}";
     if (($s['message'] ?? '') !== '') $t .= "\n" . $s['message'];
     return 'https://wa.me/' . $num . '?text=' . rawurlencode($t);
 }
