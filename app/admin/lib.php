@@ -482,7 +482,7 @@ function head_html(string $title): void {
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     echo '<meta name="robots" content="noindex,nofollow">';
     echo '<title>' . e(t($title)) . ' — xaliqrzayev.com admin</title>';
-    echo '<link rel="icon" href="../assets/img/favicon.svg" type="image/svg+xml">';
+    echo '<link rel="icon" href="../favicon.ico" sizes="48x48"><link rel="icon" href="' . e(admin_asset('img/favicon.svg')) . '" type="image/svg+xml">';
     echo '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>';
     echo '<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">';
     echo '<link rel="stylesheet" href="' . e(admin_asset('css/admin.css')) . '"></head><body>';

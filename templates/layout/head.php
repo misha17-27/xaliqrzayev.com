@@ -24,7 +24,11 @@ $ogImage = SITE_URL . img($IMAGES['og_image']);
 <meta name="twitter:card" content="summary_large_image">
 <?php endif; ?>
 <meta name="theme-color" content="#0e1a2b">
-<link rel="icon" href="<?= e(img('favicon.svg')) ?>" type="image/svg+xml">
+<link rel="icon" href="<?= e(url('favicon.ico')) ?>" sizes="48x48">
+<link rel="icon" href="<?= e(asset('img/favicon.svg')) ?>" type="image/svg+xml">
+<link rel="icon" href="<?= e(asset('img/icons/favicon-32.png')) ?>" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="<?= e(asset('img/icons/apple-touch-icon.png')) ?>">
+<link rel="manifest" href="<?= e(url('site.webmanifest')) ?>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">

@@ -4,6 +4,8 @@ Options -Indexes
 DirectoryIndex index.php
 ErrorDocument 404 /404.php
 AddDefaultCharset UTF-8
+AddType application/manifest+json .webmanifest
+AddType image/x-icon .ico
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
@@ -34,7 +36,7 @@ AddDefaultCharset UTF-8
     Header always set X-Frame-Options "SAMEORIGIN"
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
     Header always set Permissions-Policy "camera=(), microphone=(), geolocation=()"
-    <FilesMatch "\.(css|js|jpg|jpeg|png|webp|gif|svg|woff2?)$">
+    <FilesMatch "\.(css|js|jpg|jpeg|png|webp|gif|svg|ico|webmanifest|woff2?)$">
         Header set Cache-Control "public, max-age=2592000"
     </FilesMatch>
 </IfModule>
