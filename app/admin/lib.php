@@ -4,6 +4,7 @@
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/schema.php';
+require_once __DIR__ . '/totp.php';
 
 function pdo(): PDO {
     static $p = null;
@@ -102,69 +103,160 @@ function boot_session(): void {
 }
 
 function current_admin(): ?array { boot_session(); return $_SESSION['admin'] ?? null; }
+
+/**
+ * Hər sorğuda hesab bazada yoxlanılır: silinib, söndürülüb və ya parolu/2FA dəyişibsə (session_ver),
+ * köhnə sessiya dərhal bağlanır. Rol da bazadan götürülür.
+ */
 function require_login(): array {
     $a = current_admin();
     if (!$a) redirect('index.php?section=login');
-    return $a;
+    try {
+        $st = pdo()->prepare('SELECT id, email, name, role, active, session_ver FROM admins WHERE id = ?');
+        $st->execute([(int)$a['id']]);
+        $u = $st->fetch();
+    } catch (Throwable $e) { $u = null; }
+    if (!$u || (int)$u['active'] !== 1 || (int)$u['session_ver'] !== (int)($a['ver'] ?? -1)) {
+        logout();
+        boot_session();
+        flash(t('Сессия завершена. Войдите снова.'), 'err');
+        redirect('index.php?section=login');
+    }
+    $_SESSION['admin']['role']  = $u['role'];
+    $_SESSION['admin']['email'] = $u['email'];
+    $_SESSION['admin']['name']  = $u['name'];
+    return $_SESSION['admin'];
 }
 
-/* ---------------- giriş cəhdlərinin məhdudlaşdırılması ----------------
-   Həm sessiyada, həm bazada (IP üzrə) sayılır — cookie silməklə keçmək olmasın. */
-const LOGIN_MAX_TRIES = 6;
-const LOGIN_WINDOW    = 900;        // 15 dəqiqə
-
-function client_ip_admin(): string {
-    $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
-    return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : '';
-}
-function login_blocked(): int {
+/* ---------------- əməliyyat jurnalı ---------------- */
+function admin_log(string $action, string $detail = '', ?string $who = null): void {
     try {
-        $st = pdo()->prepare('SELECT COUNT(*) c, MIN(at) m FROM login_fails WHERE ip = ? AND at > ?');
-        $st->execute([client_ip_admin(), time() - LOGIN_WINDOW]);
-        $r = $st->fetch();
-        if ((int)$r['c'] < LOGIN_MAX_TRIES) return 0;
-        return max(1, (int)$r['m'] + LOGIN_WINDOW - time());
-    } catch (Throwable $e) { return 0; }
-}
-function login_fail(): void {
-    try {
-        $db = pdo();
-        $db->prepare('INSERT INTO login_fails (ip, at) VALUES (?, ?)')->execute([client_ip_admin(), time()]);
-        $db->prepare('DELETE FROM login_fails WHERE at < ?')->execute([time() - 86400]);
+        $a = current_admin();
+        pdo()->prepare('INSERT INTO admin_log (at, admin, ip, action, detail) VALUES (?,?,?,?,?)')
+             ->execute([date('Y-m-d H:i:s'), mb_substr($who ?? ($a['email'] ?? ''), 0, 190), client_ip(), mb_substr($action, 0, 60), mb_substr($detail, 0, 255)]);
+        if (random_int(1, 50) === 1) pdo()->prepare('DELETE FROM admin_log WHERE at < ?')->execute([date('Y-m-d H:i:s', time() - 180 * 86400)]);
     } catch (Throwable $e) {}
 }
 
-function attempt_login(string $email, string $pass): bool {
-    if (login_blocked() > 0) return false;
+/* ---------------- giriş cəhdlərinin məhdudlaşdırılması ----------------
+   IP üzrə (6 cəhd / 15 dəq) və hesab üzrə (10 cəhd / 15 dəq — çox IP-dən parol seçilməsinə qarşı). */
+const LOGIN_MAX_TRIES       = 6;
+const LOGIN_MAX_PER_ACCOUNT = 10;
+const LOGIN_WINDOW          = 900;        // 15 dəqiqə
+
+function client_ip_admin(): string { return client_ip(); }   // app/security.php
+
+/** Bloklanıbsa — qalan saniyə, əks halda 0 */
+function login_blocked(string $email = ''): int {
+    try {
+        $since = time() - LOGIN_WINDOW;
+        $st = pdo()->prepare('SELECT COUNT(*) c, MIN(at) m FROM login_fails WHERE ip = ? AND at > ?');
+        $st->execute([client_ip(), $since]);
+        $r = $st->fetch();
+        $wait = (int)$r['c'] >= LOGIN_MAX_TRIES ? (int)$r['m'] + LOGIN_WINDOW - time() : 0;
+        if ($email !== '') {
+            $st = pdo()->prepare('SELECT COUNT(*) c, MIN(at) m FROM login_fails WHERE email = ? AND at > ?');
+            $st->execute([mb_strtolower(trim($email)), $since]);
+            $r = $st->fetch();
+            if ((int)$r['c'] >= LOGIN_MAX_PER_ACCOUNT) $wait = max($wait, (int)$r['m'] + LOGIN_WINDOW - time());
+        }
+        return $wait > 0 ? $wait : 0;
+    } catch (Throwable $e) { return 0; }
+}
+function login_fail(string $email = ''): void {
+    try {
+        $db = pdo();
+        $db->prepare('INSERT INTO login_fails (ip, email, at) VALUES (?, ?, ?)')->execute([client_ip(), mb_strtolower(trim($email)), time()]);
+        $db->prepare('DELETE FROM login_fails WHERE at < ?')->execute([time() - 86400]);
+    } catch (Throwable $e) {}
+    usleep(400000);   // hər uğursuz cəhd yavaşıdılır
+}
+
+/** Həqiqi bcrypt heşi: mövcud olmayan hesabda da yoxlama eyni vaxt aparsın (istifadəçinin varlığı bilinməsin) */
+function dummy_hash(): string {
+    static $h = null;
+    return $h ?? ($h = password_hash(bin2hex(random_bytes(8)), PASSWORD_DEFAULT));
+}
+
+/** Sessiyanı açır (parol və lazım olsa 2FA yoxlanandan sonra) */
+function login_complete(array $u): void {
+    boot_session();
+    session_regenerate_id(true);
+    unset($_SESSION['pending_2fa']);
+    $_SESSION['start'] = time();
+    $_SESSION['seen']  = time();
+    $_SESSION['admin'] = [
+        'id' => (int)$u['id'], 'email' => $u['email'], 'name' => $u['name'] ?? '',
+        'role' => $u['role'] ?? 'editor', 'ver' => (int)($u['session_ver'] ?? 0),
+    ];
+    try {
+        pdo()->prepare('UPDATE admins SET last_login=? WHERE id=?')->execute([date('Y-m-d H:i'), (int)$u['id']]);
+        pdo()->prepare('DELETE FROM login_fails WHERE ip = ? OR email = ?')->execute([client_ip(), mb_strtolower((string)$u['email'])]);
+    } catch (Throwable $e) {}
+    admin_log('login', '', (string)$u['email']);
+}
+
+/**
+ * Parol yoxlanışı. Qaytarır: 'ok' — daxil oldu; '2fa' — kod lazımdır; 'fail' — uğursuz.
+ */
+function attempt_login(string $email, string $pass): string {
+    if (login_blocked($email) > 0) return 'fail';
 
     $st = pdo()->prepare('SELECT * FROM admins WHERE email = ? LIMIT 1');
     $st->execute([trim($email)]);
     $u = $st->fetch();
 
-    /* Mövcud olmayan hesab üçün də heş yoxlanılır — vaxt fərqi olmasın */
-    $hash = $u['pass_hash'] ?? '$2y$10$' . str_repeat('.', 53);
+    $hash = $u['pass_hash'] ?? dummy_hash();
     $ok   = password_verify($pass, $hash);
 
     if ($u && $ok && (int)($u['active'] ?? 1) === 1) {
-        boot_session();
-        session_regenerate_id(true);
-        $_SESSION['start'] = time();
-        $_SESSION['seen']  = time();
-        $_SESSION['admin'] = [
-            'id' => (int)$u['id'], 'email' => $u['email'],
-            'name' => $u['name'] ?? '', 'role' => $u['role'] ?? 'editor',
-        ];
-        try {
-            pdo()->prepare('UPDATE admins SET last_login=? WHERE id=?')->execute([date('Y-m-d H:i'), (int)$u['id']]);
-            pdo()->prepare('DELETE FROM login_fails WHERE ip = ?')->execute([client_ip_admin()]);
-            if (password_needs_rehash($hash, PASSWORD_DEFAULT)) {
-                pdo()->prepare('UPDATE admins SET pass_hash=? WHERE id=?')->execute([password_hash($pass, PASSWORD_DEFAULT), (int)$u['id']]);
-            }
-        } catch (Throwable $e) {}
-        return true;
+        if (password_needs_rehash($hash, PASSWORD_DEFAULT)) {
+            try { pdo()->prepare('UPDATE admins SET pass_hash=? WHERE id=?')->execute([password_hash($pass, PASSWORD_DEFAULT), (int)$u['id']]); } catch (Throwable $e) {}
+        }
+        if ((string)($u['totp_secret'] ?? '') !== '') {
+            boot_session();
+            session_regenerate_id(true);
+            $_SESSION['pending_2fa'] = ['id' => (int)$u['id'], 'at' => time()];
+            return '2fa';
+        }
+        login_complete($u);
+        return 'ok';
     }
-    login_fail();
-    return false;
+    login_fail($email);
+    admin_log('login_fail', '', mb_substr(trim($email), 0, 190));
+    return 'fail';
+}
+
+/** 2FA kodu. Qaytarır: 'ok' | 'fail' | 'expired' */
+function attempt_2fa(string $code): string {
+    boot_session();
+    $p = $_SESSION['pending_2fa'] ?? null;
+    if (!$p || time() - (int)$p['at'] > 300) { unset($_SESSION['pending_2fa']); return 'expired'; }
+    $st = pdo()->prepare('SELECT * FROM admins WHERE id = ? AND active = 1');
+    $st->execute([(int)$p['id']]);
+    $u = $st->fetch();
+    if (!$u || login_blocked((string)$u['email']) > 0) { unset($_SESSION['pending_2fa']); return 'expired'; }
+    $step = totp_verify((string)$u['totp_secret'], $code, (int)$u['totp_last']);
+    if ($step > 0) {
+        pdo()->prepare('UPDATE admins SET totp_last = ? WHERE id = ?')->execute([$step, (int)$u['id']]);
+        login_complete($u);
+        return 'ok';
+    }
+    login_fail((string)$u['email']);
+    admin_log('2fa_fail', '', (string)$u['email']);
+    return 'fail';
+}
+
+/** Parol/2FA dəyişəndə və ya istifadəçi söndürüləndə onun bütün sessiyaları etibarsız olur */
+function bump_session_ver(int $id): void {
+    pdo()->prepare('UPDATE admins SET session_ver = session_ver + 1 WHERE id = ?')->execute([$id]);
+    $a = current_admin();
+    if ($a && (int)$a['id'] === $id) {
+        /* özümüz — cari sessiyanı yeni versiyada saxlayırıq */
+        $st = pdo()->prepare('SELECT session_ver FROM admins WHERE id = ?'); $st->execute([$id]);
+        $_SESSION['admin']['ver'] = (int)$st->fetchColumn();
+        session_regenerate_id(true);
+    }
 }
 
 function is_admin(): bool {
@@ -255,6 +347,7 @@ function admin_upload(string $field, string &$err = ''): ?string {
 
     $info = @getimagesize($f['tmp_name']);
     if ($info === false || !str_starts_with((string)$info['mime'], 'image/')) { $err = t('Файл не является изображением'); return null; }
+    if ((int)$info[0] * (int)$info[1] > 40000000) { $err = t('Изображение слишком большое (максимум 40 мегапикселей)'); return null; }
     if (class_exists('finfo')) {
         $mime = (string)(new finfo(FILEINFO_MIME_TYPE))->file($f['tmp_name']);
         if (!str_starts_with($mime, 'image/')) { $err = t('Файл не является изображением'); return null; }
@@ -384,6 +477,7 @@ function admin_asset(string $path): string {
 }
 
 function head_html(string $title): void {
+    send_security_headers('admin');
     echo '<!doctype html><html lang="' . admin_lang() . '"><head><meta charset="utf-8">';
     echo '<meta name="viewport" content="width=device-width, initial-scale=1">';
     echo '<meta name="robots" content="noindex,nofollow">';
@@ -422,7 +516,7 @@ function layout_top(string $active, string $title): void {
     echo t('<label for="navtoggle" class="burger" title="Меню"><span></span><span></span><span></span></label>');
     echo '<h1>' . e(t($title)) . '</h1><div class="bar-r">' . lang_switch() . ' ';
     echo '<a class="btn ghost site" href="../' . (SITE_ANCHORS[$active] ?? '') . t('" target="_blank" rel="noopener">Открыть сайт ↗</a> ');
-    echo t('<a class="btn" href="index.php?section=logout">Выйти</a></div></header><div class="body">');
+    echo '<a class="btn" href="index.php?section=logout&amp;t=' . e(csrf_token()) . '">' . t('Выйти') . '</a></div></header><div class="body">';
     echo flash_render();
 }
 function layout_bottom(): void {

@@ -30,7 +30,7 @@ $ogImage = SITE_URL . img($IMAGES['og_image']);
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="<?= e(asset('css/style.css')) ?>">
 <?php if (!empty($page['schema'])): ?>
-<script type="application/ld+json"><?= json_encode([
+<script type="application/ld+json" nonce="<?= csp_nonce() ?>"><?= json_encode([
     '@context'  => 'https://schema.org',
     '@type'     => 'Physician',
     'name'      => $T['site_name'],
@@ -43,7 +43,7 @@ $ogImage = SITE_URL . img($IMAGES['og_image']);
 <?php endif; ?>
 <?php if (($ga = cms_setting('ga_id')) !== ''): ?>
 <script async src="https://www.googletagmanager.com/gtag/js?id=<?= e($ga) ?>"></script>
-<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',<?= json_encode($ga) ?>);</script>
+<script nonce="<?= csp_nonce() ?>">window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',<?= json_encode($ga) ?>);</script>
 <?php endif; ?>
 </head>
 <body>

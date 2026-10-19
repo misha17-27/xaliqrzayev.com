@@ -175,9 +175,13 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
 
     if ($section === 'profile') {
         $a = current_admin();
+        $st = $db->prepare('SELECT pass_hash, totp_secret, totp_last FROM admins WHERE id=?'); $st->execute([$a['id']]); $row = $st->fetch();
+        $pwOk = function (string $field) use ($row) { return password_verify((string)($_POST[$field] ?? ''), (string)($row['pass_hash'] ?? '')); };
+
         if ($act === 'save') {
             $em = trim((string)($_POST['email'] ?? ''));
             if (!filter_var($em, FILTER_VALIDATE_EMAIL)) flash(t('Некорректный e-mail.'), 'err');
+            elseif (mb_strtolower($em) !== mb_strtolower((string)$a['email']) && !$pwOk('cur')) flash(t('Для смены e-mail введите текущий пароль.'), 'err');
             else {
                 $chk = $db->prepare('SELECT id FROM admins WHERE email=? AND id<>?'); $chk->execute([$em, $a['id']]);
                 if ($chk->fetch()) flash(t('Этот e-mail уже занят.'), 'err');
@@ -189,14 +193,37 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 }
             }
         } elseif ($act === 'passwd') {
-            $st = $db->prepare('SELECT pass_hash FROM admins WHERE id=?'); $st->execute([$a['id']]); $row = $st->fetch();
-            if (!password_verify((string)($_POST['old'] ?? ''), $row['pass_hash'] ?? '')) flash(t('Текущий пароль неверный.'), 'err');
+            if (!$pwOk('old'))                                                         flash(t('Текущий пароль неверный.'), 'err');
             elseif (strlen((string)($_POST['new'] ?? '')) < 8)                        flash(t('Новый пароль слишком короткий (мин. 8).'), 'err');
             elseif (($_POST['new'] ?? '') !== ($_POST['new2'] ?? ''))                 flash(t('Пароли не совпадают.'), 'err');
             else {
                 $db->prepare('UPDATE admins SET pass_hash=? WHERE id=?')->execute([password_hash((string)$_POST['new'], PASSWORD_DEFAULT), $a['id']]);
-                session_regenerate_id(true);
+                bump_session_ver((int)$a['id']);
+                admin_log('password_changed');
                 flash(t('Пароль изменён.'));
+            }
+        } elseif ($act === 'totp_start') {
+            $_SESSION['totp_setup'] = totp_new_secret();
+        } elseif ($act === 'totp_cancel') {
+            unset($_SESSION['totp_setup']);
+        } elseif ($act === 'totp_confirm') {
+            $sec = (string)($_SESSION['totp_setup'] ?? '');
+            $stepOk = $sec !== '' ? totp_verify($sec, (string)($_POST['code'] ?? '')) : 0;
+            if ($stepOk) {
+                $db->prepare('UPDATE admins SET totp_secret=?, totp_last=? WHERE id=?')->execute([$sec, $stepOk, $a['id']]);
+                unset($_SESSION['totp_setup']);
+                bump_session_ver((int)$a['id']);
+                admin_log('2fa_on');
+                flash(t('Двухфакторная защита включена.'));
+            } else flash(t('Неверный код. Проверьте время на телефоне и попробуйте ещё раз.'), 'err');
+        } elseif ($act === 'totp_off') {
+            if (!$pwOk('cur')) flash(t('Текущий пароль неверный.'), 'err');
+            elseif (!totp_verify((string)$row['totp_secret'], (string)($_POST['code'] ?? ''), (int)$row['totp_last'])) flash(t('Неверный код.'), 'err');
+            else {
+                $db->prepare("UPDATE admins SET totp_secret='', totp_last=0 WHERE id=?")->execute([$a['id']]);
+                bump_session_ver((int)$a['id']);
+                admin_log('2fa_off');
+                flash(t('Двухфакторная защита отключена.'));
             }
         }
         redirect('index.php?section=profile');
@@ -223,12 +250,21 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
                 $role   = ($row['role'] ?? 'editor') === 'admin' ? 'admin' : 'editor';
                 $active = isset($row['active']) ? 1 : 0;
                 if ($id === $me) { $active = 1; $role = 'admin'; }
+                $prev = $db->prepare('SELECT active, role FROM admins WHERE id=?'); $prev->execute([$id]); $prev = $prev->fetch();
                 $db->prepare('UPDATE admins SET name=?, role=?, active=? WHERE id=?')->execute([trim((string)($row['name'] ?? '')), $role, $active, $id]);
-                if (($row['password'] ?? '') !== '') {
+                $kick = $prev && ((int)$prev['active'] !== $active || $prev['role'] !== $role);
+                if (!empty($row['reset2fa']) && $id !== $me) {
+                    $db->prepare("UPDATE admins SET totp_secret='', totp_last=0 WHERE id=?")->execute([$id]);
+                    admin_log('2fa_reset', '#' . $id);
+                    $kick = true;
+                }
+                /* Öz parolunu yalnız «Profil»də (cari parol ilə) dəyişmək olar */
+                if (($row['password'] ?? '') !== '' && $id !== $me) {
                     if (strlen((string)$row['password']) >= 8)
-                        $db->prepare('UPDATE admins SET pass_hash=? WHERE id=?')->execute([password_hash((string)$row['password'], PASSWORD_DEFAULT), $id]);
+                    { $db->prepare('UPDATE admins SET pass_hash=? WHERE id=?')->execute([password_hash((string)$row['password'], PASSWORD_DEFAULT), $id]); $kick = true; }
                     else flash(t('Пароль не изменён: минимум 8 символов.'), 'err');
                 }
+                if ($kick && $id !== $me) bump_session_ver($id);
             }
             flash(t('Изменения сохранены.'));
         } elseif ($act === 'del') {

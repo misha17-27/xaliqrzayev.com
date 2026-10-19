@@ -11,6 +11,7 @@
 declare(strict_types=1);
 require dirname(__DIR__) . '/_init.php';
 require APP_DIR . '/admin/lib.php';
+send_security_headers('admin');
 header('Content-Type: text/plain; charset=utf-8');
 
 $token = (string)cfg('install_token', '');

@@ -76,10 +76,7 @@ function turnstile_verify(string $token): bool {
     return !empty($j['success']);
 }
 
-function client_ip(): string {
-    $ip = $_SERVER['HTTP_CF_CONNECTING_IP'] ?? $_SERVER['REMOTE_ADDR'] ?? '';
-    return filter_var($ip, FILTER_VALIDATE_IP) ? $ip : '';
-}
+/* client_ip() — app/security.php (Cloudflare yoxlaması ilə) */
 
 /* ---------------- Forma tokeni (sessiyasız) ----------------
    Forma göstərilən vaxt imzalanır: bot dərhal göndərirsə və ya
@@ -140,6 +137,7 @@ function render_page(array $page, array $sections, array $vars = []): void {
     $navBase = in_array('hero', $sections, true) ? '' : url('/');
     extract($vars, EXTR_OVERWRITE);
 
+    send_security_headers('site');
     require TPL_DIR . '/layout/head.php';
     require TPL_DIR . '/layout/header.php';
     echo "

@@ -103,6 +103,15 @@
     }
   });
 
+  /* ---------- 2FA: QR kod (kitabxana lokal, açar heç yerə göndərilmir) ---------- */
+  var qrBox = document.getElementById('totp-qr');
+  if (qrBox && window.qrcode) {
+    var qr = window.qrcode(0, 'M');
+    qr.addData(qrBox.getAttribute('data-uri'));
+    qr.make();
+    qrBox.innerHTML = qr.createSvgTag({ cellSize: 5, margin: 2, scalable: true });
+  }
+
   /* ---------- Simvol sayğacları: data-max ---------- */
   document.querySelectorAll('[data-max]').forEach(function (el) {
     var max = parseInt(el.getAttribute('data-max'), 10);

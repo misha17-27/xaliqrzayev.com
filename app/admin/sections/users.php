@@ -6,14 +6,18 @@ $me = (int)current_admin()['id'];
 $users = $db->query('SELECT * FROM admins ORDER BY id')->fetchAll();
 echo '<form method="post" class="panel">' . csrf_field() . '<input type="hidden" name="action" value="save">';
 echo t('<h3>Пользователи панели</h3><p class="muted">Редактор может менять контент и заявки, но не видит настройки почты, безопасности и пользователей.</p>');
-echo t('<div class="tablewrap"><table><tr><th>E-mail</th><th>Имя</th><th>Роль</th><th class="c">Активен</th><th>Новый пароль</th><th>Последний вход</th></tr>');
+echo t('<div class="tablewrap"><table><tr><th>E-mail</th><th>Имя</th><th>Роль</th><th class="c">Активен</th><th>Новый пароль</th><th>2FA</th><th>Последний вход</th></tr>');
 foreach ($users as $u) {
     $id = (int)$u['id']; $self = $id === $me;
     echo '<tr><td>' . e($u['email']) . ($self ? t(' <span class="pill">вы</span>') : '') . '</td>'
        . '<td><input type="text" name="u[' . $id . '][name]" value="' . e($u['name']) . '"></td>'
        . '<td><select name="u[' . $id . '][role]"' . ($self ? ' disabled' : '') . '><option value="admin"' . ($u['role'] === 'admin' ? ' selected' : '') . t('>Администратор</option><option value="editor"') . ($u['role'] !== 'admin' ? ' selected' : '') . t('>Редактор</option></select></td>')
        . '<td class="c"><input type="checkbox" name="u[' . $id . '][active]" value="1"' . ((int)$u['active'] ? ' checked' : '') . ($self ? ' disabled' : '') . '></td>'
-       . '<td><input type="password" name="u[' . $id . t('][password]" placeholder="не менять" autocomplete="new-password"></td>')
+       . ($self ? '<td class="muted">' . e(t('в профиле')) . '</td>'
+                : '<td><input type="password" name="u[' . $id . t('][password]" placeholder="не менять" autocomplete="new-password"></td>'))
+       . '<td>' . (((string)($u['totp_secret'] ?? '')) !== ''
+            ? '<span class="pill">' . e(t('Вкл.')) . '</span>' . ($self ? '' : '<label class="inline" style="margin-top:6px"><input type="checkbox" name="u[' . $id . '][reset2fa]" value="1"> ' . e(t('сбросить')) . '</label>')
+            : '<span class="pill warn">' . e(t('Выкл.')) . '</span>') . '</td>'
        . '<td class="muted">' . e((string)$u['last_login']) . '</td></tr>';
 }
 echo t('</table></div><p><button class="btn">Сохранить</button></p></form>');

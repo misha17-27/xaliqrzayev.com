@@ -14,6 +14,7 @@ $page = [
 
 /* Qəbul formunun JS-siz göndərilməsindən sonra nəticə */
 $sent    = isset($_GET['sent']);
-$formErr = isset($_GET['err']) ? mb_substr((string)$_GET['err'], 0, 200) : '';
+$errKey  = (string)($_GET['err'] ?? '');
+$formErr = (preg_match('/^form_err_[a-z_]+$/', $errKey) && isset($TEXTS[$errKey])) ? $TEXTS[$errKey] : '';   // yalnız öz mətnlərimiz
 
 render_page($page, ['hero', 'about', 'diagnostics', 'surgery', 'education', 'contact'], compact('sent', 'formErr'));

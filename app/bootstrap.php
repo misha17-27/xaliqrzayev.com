@@ -25,6 +25,8 @@ define('TURNSTILE_SITE', '');
 define('TURNSTILE_SECRET', '');
 
 require_once APP_DIR . '/compat.php';
+require_once APP_DIR . '/security.php';
+security_error_setup();
 require_once APP_DIR . '/functions.php';
 
 require APP_DIR . '/defaults.php';

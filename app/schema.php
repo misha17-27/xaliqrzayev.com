@@ -23,7 +23,10 @@ function cms_create_tables(PDO $db): array {
             `pass_hash` VARCHAR(255) NOT NULL,
             `role` VARCHAR(20) DEFAULT 'editor',
             `active` INT DEFAULT 1,
-            `last_login` VARCHAR(40) DEFAULT NULL",
+            `last_login` VARCHAR(40) DEFAULT NULL,
+            `totp_secret` VARCHAR(64) DEFAULT '',
+            `totp_last` INT DEFAULT 0,
+            `session_ver` INT DEFAULT 0",
 
         'settings' => "`k` VARCHAR(80) PRIMARY KEY, `v` TEXT",
         'texts'    => "`k` VARCHAR(80) PRIMARY KEY, `v` TEXT",
@@ -68,7 +71,14 @@ function cms_create_tables(PDO $db): array {
             `user_agent` VARCHAR(255) DEFAULT '',
             `created_at` VARCHAR(30) DEFAULT ''",
 
-        'login_fails' => "$pk, `ip` VARCHAR(60) DEFAULT '', `at` INT DEFAULT 0",
+        'login_fails' => "$pk, `ip` VARCHAR(60) DEFAULT '', `email` VARCHAR(190) DEFAULT '', `at` INT DEFAULT 0",
+
+        'admin_log' => "$pk,
+            `at` VARCHAR(20) DEFAULT '',
+            `admin` VARCHAR(190) DEFAULT '',
+            `ip` VARCHAR(60) DEFAULT '',
+            `action` VARCHAR(60) DEFAULT '',
+            `detail` VARCHAR(255) DEFAULT ''",
     ];
 
     $made = [];
@@ -134,7 +144,7 @@ function cms_seed(PDO $db): array {
 /* ---------------- Sxemin yenilənməsi ----------------
    Köhnə bazalara çatışmayan sütunları əlavə edir. settings.schema_version ilə bir dəfə işləyir.
    app/content.php hər sorğuda versiyanı yoxlayır (ucuzdur — settings onsuz da oxunur). */
-const CMS_SCHEMA_VERSION = 3;
+const CMS_SCHEMA_VERSION = 4;
 
 function cms_columns(PDO $db, string $table): array {
     $cols = [];
@@ -152,7 +162,20 @@ function cms_migrate(PDO $db): void {
             'email'    => "VARCHAR(190) DEFAULT ''",
             'notified' => "VARCHAR(120) DEFAULT ''",
         ],
+        /* v4: 2FA, sessiyaların ləğvi, hesab üzrə giriş limiti */
+        'admins' => [
+            'totp_secret' => "VARCHAR(64) DEFAULT ''",
+            'totp_last'   => "INT DEFAULT 0",
+            'session_ver' => "INT DEFAULT 0",
+        ],
+        'login_fails' => [
+            'email' => "VARCHAR(190) DEFAULT ''",
+        ],
     ];
+    /* v4: əməliyyat jurnalı */
+    $pk = cms_pk($db);
+    $suf = cms_is_sqlite($db) ? '' : ' ENGINE=InnoDB DEFAULT CHARSET=utf8mb4';
+    $db->exec("CREATE TABLE IF NOT EXISTS `admin_log` ($pk, `at` VARCHAR(20) DEFAULT '', `admin` VARCHAR(190) DEFAULT '', `ip` VARCHAR(60) DEFAULT '', `action` VARCHAR(60) DEFAULT '', `detail` VARCHAR(255) DEFAULT '')$suf");
     foreach ($add as $table => $cols) {
         $have = cms_columns($db, $table);
         foreach ($cols as $c => $def) {
