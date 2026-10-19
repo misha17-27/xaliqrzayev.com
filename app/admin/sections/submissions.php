@@ -25,7 +25,12 @@ else {
         $wa  = preg_replace('/\D/', '', $r['phone']);
         echo '<tr' . (!$r['is_read'] ? ' class="unread"' : '') . '>';
         echo '<td style="white-space:nowrap">' . e($r['created_at']) . (!$r['is_read'] ? t('<br><span class="pill warn">новая</span>') : '') . '</td>';
-        echo '<td><b>' . e($r['name']) . '</b><br><a href="tel:' . e($tel) . '">' . e($r['phone']) . '</a><br><a href="https://wa.me/' . e($wa) . '" target="_blank" rel="noopener" class="muted">WhatsApp ↗</a></td>';
+        $em = (string)($r['email'] ?? '');
+        echo '<td><b>' . e($r['name']) . '</b><br><a href="tel:' . e($tel) . '">' . e($r['phone']) . '</a>'
+           . ($em !== '' ? '<br><a href="mailto:' . e($em) . '">' . e($em) . '</a>' : '')
+           . '<br><a href="https://wa.me/' . e($wa) . '" target="_blank" rel="noopener" class="muted">WhatsApp ↗</a>'
+           . (($r['notified'] ?? '') !== '' ? '<div class="hint">' . e(t('Уведомления')) . ': ' . e((string)$r['notified']) . '</div>' : '')
+           . '</td>';
         echo '<td><div class="msg-text">' . ($r['message'] !== '' ? e($r['message']) : '<span class="muted">—</span>') . '</div></td>';
         echo '<td><form method="post" style="min-width:200px">' . csrf_field() . '<input type="hidden" name="action" value="update"><input type="hidden" name="id" value="' . (int)$r['id'] . '"><input type="hidden" name="f" value="' . e($f) . '">'
            . '<select name="status">';

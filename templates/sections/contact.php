@@ -11,7 +11,7 @@ $soc = array_filter(['instagram', 'facebook', 'youtube', 'tiktok'], function ($k
       <h2><?= e(implode(' ', $ctaWords)) ?><?php if ($ctaLast !== ''): ?> <em><?= e($ctaLast) ?></em><?php endif; ?></h2>
       <p><?= e($T['cta_text']) ?></p>
 
-      <form class="form-box" id="appt" method="post" action="<?= e(url('muraciet.php')) ?>" novalidate data-err-name="<?= e($T['form_err_name']) ?>" data-err-phone="<?= e($T['form_err_phone']) ?>" data-err-net="<?= e($T['form_err_net']) ?>">
+      <form class="form-box" id="appt" method="post" action="<?= e(url('muraciet.php')) ?>" novalidate data-err-name="<?= e($T['form_err_name']) ?>" data-err-phone="<?= e($T['form_err_phone']) ?>" data-err-email="<?= e($T['form_err_email']) ?>" data-err-net="<?= e($T['form_err_net']) ?>">
         <h3><?= e($T['form_title']) ?></h3>
         <?php if ($T['form_sub'] !== ''): ?><p class="muted"><?= e($T['form_sub']) ?></p><?php endif; ?>
         <input type="hidden" name="_t" value="<?= e(form_token()) ?>">
@@ -20,6 +20,8 @@ $soc = array_filter(['instagram', 'facebook', 'youtube', 'tiktok'], function ($k
         <input id="f-name" type="text" name="name" required minlength="2" maxlength="80" autocomplete="name">
         <label for="f-phone"><?= e($T['form_phone']) ?></label>
         <input id="f-phone" type="tel" name="phone" required maxlength="25" placeholder="<?= e($T['form_phone_ph']) ?>" autocomplete="tel" inputmode="tel">
+        <label for="f-email"><?= e($T['form_email']) ?><?php if ($T['form_optional'] !== ''): ?> <span>(<?= e($T['form_optional']) ?>)</span><?php endif; ?></label>
+        <input id="f-email" type="email" name="email" maxlength="190" autocomplete="email" inputmode="email">
         <label for="f-msg"><?= e($T['form_msg']) ?><?php if ($T['form_optional'] !== ''): ?> <span>(<?= e($T['form_optional']) ?>)</span><?php endif; ?></label>
         <textarea id="f-msg" name="message" maxlength="1500"></textarea>
         <?php if (turnstile_on()): ?><div class="cf-turnstile" data-sitekey="<?= e(turnstile_site()) ?>" data-language="az"></div><?php endif; ?>

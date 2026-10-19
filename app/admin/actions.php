@@ -165,6 +165,34 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') === 'POST') {
         redirect('index.php?section=smtp');
     }
 
+    if ($section === 'notify') {
+        if ($act === 'save') {
+            kv_set('settings', 'wa_api_on', !empty($_POST['wa_api_on']) ? '1' : '0');
+            kv_set('settings', 'wa_visitor_btn', !empty($_POST['wa_visitor_btn']) ? '1' : '0');
+            $ph = trim((string)($_POST['wa_api_phone'] ?? ''));
+            if ($ph !== '' && strlen(preg_replace('/\D/', '', $ph)) < 9) flash(t('Номер WhatsApp указан неверно.'), 'err');
+            else kv_set('settings', 'wa_api_phone', $ph);
+            if (($_POST['wa_api_key'] ?? '') !== '') kv_set('settings', 'wa_api_key', trim((string)$_POST['wa_api_key']));
+            $prov = (string)($_POST['wa_api_provider'] ?? 'textmebot');
+            if (!in_array($prov, ['textmebot', 'callmebot', 'custom'], true)) $prov = 'textmebot';
+            kv_set('settings', 'wa_api_provider', $prov);
+            $u = trim((string)($_POST['wa_api_url'] ?? ''));
+            if ($u !== '' && (!preg_match('~^https://~i', $u) || strpos($u, '{text}') === false)) flash(t('URL должен начинаться с https:// и содержать {text}.'), 'err');
+            else kv_set('settings', 'wa_api_url', $u);
+            if (!empty($_POST['wa_api_on']) && $prov !== 'custom' && setting('wa_api_key') === '') flash(t('Для автоматической отправки нужен API key.'), 'err');
+            flash(t('Настройки WhatsApp сохранены.'));
+        } elseif ($act === 'test') {
+            require_once APP_DIR . '/notify.php';
+            global $CONTACT;
+            $phone = setting('wa_api_phone') ?: (string)($CONTACT['whatsapp'] ?? '');
+            $err = '';
+            if (wa_api_send(setting('wa_api_provider') ?: 'textmebot', $phone, setting('wa_api_key'), t('Тест: уведомления о заявках с xaliqrzayev.com работают.'), setting('wa_api_url'), $err))
+                flash(t('Тестовое сообщение отправлено на +%s.', wa_digits($phone)));
+            else flash(t('WhatsApp не отправлен: ') . $err, 'err');
+        }
+        redirect('index.php?section=notify');
+    }
+
     if ($section === 'profile') {
         $a = current_admin();
         if ($act === 'save') {
@@ -248,9 +276,9 @@ if ($section === 'submissions' && ($_GET['export'] ?? '') === 'csv') {
     header('Content-Disposition: attachment; filename="zayavki-' . date('Y-m-d') . '.csv"');
     $out = fopen('php://output', 'w');
     fwrite($out, "\xEF\xBB\xBF");   // Excel üçün UTF-8 BOM
-    fputcsv($out, ['ID', t('Дата'), t('Имя'), t('Телефон'), t('Сообщение'), t('Статус'), t('Заметка')], ';');
+    fputcsv($out, ['ID', t('Дата'), t('Имя'), t('Телефон'), 'E-mail', t('Сообщение'), t('Статус'), t('Заметка'), t('Уведомления')], ';');
     foreach ($db->query('SELECT * FROM submissions ORDER BY id DESC') as $r) {
-        $row = [$r['id'], $r['created_at'], $r['name'], $r['phone'], $r['message'], t(SUB_STATUS[$r['status']] ?? $r['status']), $r['note']];
+        $row = [$r['id'], $r['created_at'], $r['name'], $r['phone'], $r['email'] ?? '', $r['message'], t(SUB_STATUS[$r['status']] ?? $r['status']), $r['note'], $r['notified'] ?? ''];
         /* Excel düstur inyeksiyasının qarşısı */
         $row = array_map(function ($v) { $v = (string)$v; return preg_match('/^[=+\-@]/', $v) ? "'" . $v : $v; }, $row);
         fputcsv($out, $row, ';');

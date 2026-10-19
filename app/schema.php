@@ -58,8 +58,10 @@ function cms_create_tables(PDO $db): array {
         'submissions' => "$pk,
             `name` VARCHAR(120) DEFAULT '',
             `phone` VARCHAR(60) DEFAULT '',
+            `email` VARCHAR(190) DEFAULT '',
             `message` TEXT,
             `note` TEXT,
+            `notified` VARCHAR(120) DEFAULT '',
             `status` VARCHAR(20) DEFAULT 'new',
             `is_read` INT DEFAULT 0,
             `ip` VARCHAR(60) DEFAULT '',
@@ -127,4 +129,37 @@ function cms_seed(PDO $db): array {
     } else $log[] = 'seo_pages — artıq doludur';
 
     return $log;
+}
+
+/* ---------------- Sxemin yenilənməsi ----------------
+   Köhnə bazalara çatışmayan sütunları əlavə edir. settings.schema_version ilə bir dəfə işləyir.
+   app/content.php hər sorğuda versiyanı yoxlayır (ucuzdur — settings onsuz da oxunur). */
+const CMS_SCHEMA_VERSION = 2;
+
+function cms_columns(PDO $db, string $table): array {
+    $cols = [];
+    if (cms_is_sqlite($db)) {
+        foreach ($db->query("PRAGMA table_info(`$table`)") as $r) $cols[] = $r['name'];
+    } else {
+        foreach ($db->query("SHOW COLUMNS FROM `$table`") as $r) $cols[] = $r['Field'];
+    }
+    return $cols;
+}
+
+function cms_migrate(PDO $db): void {
+    $add = [
+        'submissions' => [
+            'email'    => "VARCHAR(190) DEFAULT ''",
+            'notified' => "VARCHAR(120) DEFAULT ''",
+        ],
+    ];
+    foreach ($add as $table => $cols) {
+        $have = cms_columns($db, $table);
+        foreach ($cols as $c => $def) {
+            if (!in_array($c, $have, true)) $db->exec("ALTER TABLE `$table` ADD COLUMN `$c` $def");
+        }
+    }
+    $st = $db->prepare('SELECT 1 FROM settings WHERE k = ?'); $st->execute(['schema_version']);
+    if ($st->fetch()) $db->prepare('UPDATE settings SET v = ? WHERE k = ?')->execute([(string)CMS_SCHEMA_VERSION, 'schema_version']);
+    else $db->prepare('INSERT INTO settings (k, v) VALUES (?, ?)')->execute(['schema_version', (string)CMS_SCHEMA_VERSION]);
 }

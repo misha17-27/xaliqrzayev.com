@@ -355,6 +355,7 @@ const SECTIONS = [
     'submissions' => ['Заявки с сайта', '✉'],
     'seo'         => ['SEO и аналитика', '☌'],
     'smtp'        => ['Почта (SMTP)', '✉'],
+    'notify'      => ['WhatsApp-уведомления', '✆'],
     'security'    => ['Безопасность', '⚿'],
     'backup'      => ['Резервная копия', '⤓'],
     'users'       => ['Пользователи', '☺'],
@@ -363,9 +364,9 @@ const SECTIONS = [
 const GROUPS = [
     'ОСНОВНОЕ'  => ['overview', 'submissions'],
     'КОНТЕНТ'   => ['texts', 'services', 'highlights', 'education', 'images', 'contacts'],
-    'НАСТРОЙКИ' => ['seo', 'smtp', 'security', 'backup', 'users', 'profile'],
+    'НАСТРОЙКИ' => ['seo', 'smtp', 'notify', 'security', 'backup', 'users', 'profile'],
 ];
-const ADMIN_ONLY = ['users', 'smtp', 'security', 'backup'];
+const ADMIN_ONLY = ['users', 'smtp', 'notify', 'security', 'backup'];
 
 /* «Открыть на сайте» — bölməyə uyğun lövbər */
 const SITE_ANCHORS = ['services' => '#diaqnostika', 'education' => '#tehsil', 'contacts' => '#elaqe', 'submissions' => '#elaqe'];

@@ -39,6 +39,10 @@ function cms_kv(string $table): array {
 function cms_setting(string $k, string $default = ''): string { return cms_kv('settings')[$k] ?? $default; }
 
 if ($db = cms_db()) {
+    /* Köhnə bazada sxem yenilənməyibsə — bir dəfə miqrasiya */
+    if ((int)(cms_kv('settings')['schema_version'] ?? 0) < 2) {
+        try { require_once APP_DIR . '/schema.php'; cms_migrate($db); } catch (Throwable $e) {}
+    }
     try {
         foreach (cms_kv('texts') as $k => $v)    if (array_key_exists($k, $TEXTS)) $TEXTS[$k] = $v;
         foreach (cms_kv('contacts') as $k => $v) $CONTACT[$k] = $v;

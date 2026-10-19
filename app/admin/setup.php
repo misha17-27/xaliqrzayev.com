@@ -52,6 +52,7 @@ function setup_config_php(array $c): string {
 function setup_install(PDO $db, string $name, string $email, string $pass): string {
     cms_create_tables($db);
     cms_seed($db);
+    cms_migrate($db);
     $has = (int)$db->query('SELECT COUNT(*) FROM admins')->fetchColumn();
     if ($has > 0) return '';
     $db->prepare('INSERT INTO admins (name,email,pass_hash,role,active) VALUES (?,?,?,?,1)')
