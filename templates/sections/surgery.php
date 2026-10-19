@@ -12,10 +12,14 @@
         <?php if (!empty($SERVICES['surg_open']) || !empty($SERVICES['surg_endo'])): ?>
         <div class="surg-block reveal">
           <h4><?= e($T['surg_adult_title']) ?></h4>
-          <?php foreach (['surg_open', 'surg_endo'] as $grp): if (empty($SERVICES[$grp])) continue; ?>
-          <h5><?= e($T[$grp . '_title']) ?></h5>
-          <ul class="list"><?php foreach ($SERVICES[$grp] as $t): ?><li><?= e($t) ?></li><?php endforeach; ?></ul>
-          <?php endforeach; ?>
+          <div class="surg-cols">
+            <?php foreach (['surg_open', 'surg_endo'] as $grp): if (empty($SERVICES[$grp])) continue; ?>
+            <div>
+              <h5><?= e($T[$grp . '_title']) ?></h5>
+              <ul class="list"><?php foreach ($SERVICES[$grp] as $t): ?><li><?= e($t) ?></li><?php endforeach; ?></ul>
+            </div>
+            <?php endforeach; ?>
+          </div>
         </div>
         <?php endif; ?>
         <?php if (!empty($SERVICES['surg_child'])): ?>

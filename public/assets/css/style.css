@@ -215,3 +215,9 @@ footer .container{display:flex;justify-content:space-between;flex-wrap:wrap;gap:
   .strip b{font-size:17px;overflow-wrap:anywhere}
   .strip small{font-size:12px;display:block}
 }
+
+/* Böyüklər: iki sütun — açıq | endoskopik */
+.surg-cols{display:grid;grid-template-columns:1fr 1fr;column-gap:40px;align-items:start}
+.surg-cols .list{grid-template-columns:1fr}
+.surg-cols h5{margin-top:18px}
+@media (max-width:640px){.surg-cols{grid-template-columns:1fr}.surg-cols > div + div h5{margin-top:32px}}
